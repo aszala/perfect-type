@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Default Svelte App
+/public/build/
+
+# Mac Stuff
+.DS_Store
