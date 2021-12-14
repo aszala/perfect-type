@@ -1,5 +1,4 @@
 <script>
-	export let name;
 	import Game from "./Game.svelte";
 </script>
 
@@ -15,16 +14,25 @@
 		margin: 0 auto;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
 	@media (min-width: 640px) {
 		main {
 			max-width: none;
 		}
+	}
+
+	:global(button) {
+		background-color: transparent;
+		border: 2px solid #472100;
+		display: inline-block;
+		cursor: pointer;
+		color: gray;
+		font-size: 1.2em;
+		padding: 16px 32px;
+		text-decoration: none;
+		transition: color 200ms, background-color 200ms;
+	}
+	:global(button:hover) {
+		background-color: #acacac;
+		color: var(--main-bg-color);
 	}
 </style>
