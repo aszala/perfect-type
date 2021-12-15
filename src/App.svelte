@@ -1,13 +1,22 @@
 <script>
-	import Game from "./Game.svelte";
+	import Play from "./pages/Play.svelte";
 </script>
 
-<main>
-	<Game />
-</main>
+<Play />
 
 <style>
-	main {
+	:global(:root) {
+		--main-bg-color: #F4F1E2;
+	}
+
+	:global(body) {
+		font-family: 'Times New Roman', Times, serif;
+		padding: 0px;
+		background-color: var(--main-bg-color);
+		overflow: hidden;
+	}
+
+	:global(main) {
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;
@@ -15,7 +24,7 @@
 	}
 
 	@media (min-width: 640px) {
-		main {
+		:global(main) {
 			max-width: none;
 		}
 	}
