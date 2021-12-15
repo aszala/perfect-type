@@ -1,8 +1,24 @@
 <script>
+	import router from 'page';
 	import Play from "./pages/Play.svelte";
+
+	let title;
+	let page;
+
+	router('/', () => { page = Play; title = "Perfect Type"; });
+	router('/play', () => { page = Play; title = "Perfect Type"; });
+	router('/login', () => { page = Play; title = "Perfect Type"; });
+	router('/signup', () => { page = Play; title = "Perfect Type"; });
+
+	router.start();
 </script>
 
-<Play />
+<svelte:head>
+	<title>{title}</title>
+	<meta charset="utf-8">
+</svelte:head>
+
+<svelte:component this="{page}" />
 
 <style>
 	:global(:root) {
