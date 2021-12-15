@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "firebase": "^9.6.1",
+    "page": "^1.11.6",
     "sirv-cli": "^1.0.0"
   }
 }
