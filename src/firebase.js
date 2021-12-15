@@ -67,6 +67,17 @@ export async function createUser(email, password) {
     }
 }
 
+export async function signUserIn(email, password) {
+    try {
+        const userCreds = await signInWithEmailAndPassword(auth, email, password);
+        sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
+        
+        return userCreds.user;
+    } catch(e) {
+        return null
+    }
+}
+
 export async function createDocument(collection, docID, data) {
     const docRef = doc(db, collection, docID);
 	await setDoc(docRef, data);
