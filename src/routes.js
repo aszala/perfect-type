@@ -20,7 +20,7 @@ const routes = [
     },
     {
         name: "signup",
-        component: Login,
+        component: Signup,
         onlyIf: { guard: guard, redirect: "/" }
     }
 ];
