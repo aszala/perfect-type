@@ -1,26 +1,15 @@
 <script>
-	import pageRouter from 'page';
-	import Play from "./pages/Play.svelte";
+import { Router } from 'svelte-router-spa'
+import { routes } from './routes'
 
-	console.log(pageRouter)
-
-	let title;
-	let page;
-
-	pageRouter('/', () => { page = Play; title = "Perfect Type"; });
-	pageRouter('/play', () => { page = Play; title = "Perfect Type"; });
-	pageRouter('/login', () => { page = Play; title = "Perfect Type"; });
-	pageRouter('/signup', () => { page = Play; title = "Perfect Type"; });
-
-	pageRouter.start();
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	<title>Perfect Type</title>
 	<meta charset="utf-8">
 </svelte:head>
 
-<svelte:component this="{page}" />
+<Router {routes} />
 
 <style>
 	:global(:root) {
