@@ -12,3 +12,12 @@ export function redirectHome(delay) {
         window.location.href = '/';
     }
 }
+
+export const emptyUser = {
+    'email': "",
+    'numGames': 0,
+    'avgWPM': 0,
+    'matchHistory': [],
+    'matchHistoryTime': [],
+    'uid': ""
+  }
