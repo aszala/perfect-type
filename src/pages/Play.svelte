@@ -1,17 +1,18 @@
 <script>
   import { promptIndex } from '../stores.js';
-
+  import randomWords from 'random-words';
 
   //  - PROMPT PROCESSING -
   Array.prototype.random = function() {
     return this[Math.floor((Math.random()*this.length))];
   }
-  let prompts = [
-    "I like to play minecraft and league of legends and my name is David and I sometimes like to eat and there are a lot of things I like to do as well",
-    // "j j j j j j j j j j j j j",
-  ];
 
-  let randomPrompt = prompts.random();
+  function generateRandomString() {
+    return randomWords(30).join(" ");
+  }
+
+  let randomPrompt = generateRandomString();
+  console.log(randomPrompt)
   let randomPromptWordSep = randomPrompt.split(" ");
   let promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
   for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
@@ -102,7 +103,7 @@
     promptIndex.update(() => 0);
     gameOver = false;
     winGame = false;
-    randomPrompt = prompts.random();
+    randomPrompt = generateRandomString();
     randomPromptWordSep = randomPrompt.split(" ");
     promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
     for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
@@ -121,7 +122,7 @@
     bottom: 0;
     left: 100px;
     width: auto;
-    height: 195px;
+    height: 190px;
     overflow: scroll;
     font-size: 10mm;
     overflow: hidden;
