@@ -46,3 +46,13 @@ export function getUser() {
 export function isLoggedIn() {
     return getUser() != null;
 }
+
+export async function createUser(email, password) {
+    try {
+	    const userCreds = await createUserWithEmailAndPassword(auth, email, password);
+        sessionStorage.setItem("user", JSON.stringify(userCreds.user));
+        return userCreds.user;
+    } catch(e) {
+        return null;
+    }
+}
