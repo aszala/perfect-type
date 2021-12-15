@@ -10,10 +10,6 @@ function guard() {
 
 const routes = [
     {
-        name: "perfect-type",
-        component: Play
-    },
-    {
         name: "/",
         component: Play
     },
