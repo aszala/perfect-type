@@ -11,6 +11,7 @@ import { routes } from './routes'
 
 <Router {routes} />
 
+
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
