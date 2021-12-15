@@ -2,6 +2,8 @@
 	import router from 'page';
 	import Play from "./pages/Play.svelte";
 
+	console.log(router)
+
 	let title;
 	let page;
 
