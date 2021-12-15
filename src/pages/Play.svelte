@@ -1,18 +1,16 @@
 <script>
-  import { promptIndex } from '../stores.js';
+  import { promptIndex, wordsToDisplay } from '../stores.js';
+  import GameOverDisplay from "../components/GameOverDisplay.svelte"
+  import GameModeDisplay from "../components/GameModeDisplay.svelte"
   import randomWords from 'random-words';
+import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
   //  - PROMPT PROCESSING -
   Array.prototype.random = function() {
     return this[Math.floor((Math.random()*this.length))];
   }
 
-  function generateRandomString() {
-    return randomWords(30).join(" ");
-  }
-
   let randomPrompt = generateRandomString();
-  console.log(randomPrompt)
   let randomPromptWordSep = randomPrompt.split(" ");
   let promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
   for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
@@ -21,8 +19,17 @@
     promptIndexValue = value;
   });
 
+  function generateRandomString() {
+    let promptLength = 10;
+    wordsToDisplay.subscribe(value => {
+      promptLength = value;
+    })
+    return randomWords(promptLength).join(" ");
+  }
+
   function gameListener() {
     const handleClick = (event) => {
+      console.log(randomPrompt  )
       event.preventDefault();
       if (!gameOver) {
         
@@ -31,10 +38,7 @@
 
         // losing game
         if (randomPrompt.charAt(promptIndexValue) !== event.key) {
-          startTime = 0;
           gameOver = true;
-          prevXLocation = 0;
-          prevLetter = 0;
         } else {
           // updates letter if typed ccorrectly
           updateLetterColor(event)
@@ -46,11 +50,8 @@
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
           wpm = Math.round(randomPromptWordSep.length / totalMinutes * 1000) / 1000;
-          startTime = 0;
           gameOver = true;
           winGame = true;
-          prevXLocation = 0;
-          prevLetter = 0;
           // TODO: write "wpm" to database
 
         }
@@ -66,7 +67,7 @@
 
   function updateLetterColor(event) {
     let letterToChange = document.getElementById(promptIndexValue);
-    letterToChange.style.color = "rgba(100, 100, 100, 0.5)";
+    letterToChange.style.color = typedLetterColor;
     if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
     if (letterToChange.offsetLeft < prevXLocation) {
       letterToChange.parentElement.scrollIntoView(true);
@@ -100,6 +101,9 @@
   let wpm = 0;
 
   function tryAgain() {
+    startTime = 0;
+    prevXLocation = 0;
+    prevLetter = 0;
     promptIndex.update(() => 0);
     gameOver = false;
     winGame = false;
@@ -136,23 +140,15 @@
     display:inline-block;
     padding: 1px;
   }
-
-  .game-over-environment {
-    /* todo */
-  }
-
-  .game-over-div {
-    /* todo  */
-  }
-
 </style>
 
 
 <main>
   {#if !gameOver} 
+    <GameModeDisplay refreshGame={tryAgain}/>
     <div class="game-environment" id="game-env" use:gameListener>
       {#each randomPromptWordSep as word, i}
-        <div class="game-word">
+        <div class="game-word" style={`color: ${unTypedLetterColor}`}>
           {#if i != 0}
             <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>
               {" "}
@@ -167,10 +163,7 @@
       {/each}
     </div>
   {:else}
-    <div class="game-over-environment">
-      <div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("} </div>
-      <button on:click={tryAgain}>{winGame ? "play again" : "try again"} </button>
-    </div>
+    <GameOverDisplay winGame={winGame} wpm={wpm} tryAgain={tryAgain}/>
   {/if}
 
 </main>

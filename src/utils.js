@@ -21,3 +21,6 @@ export const emptyUser = {
     'matchHistoryTime': [],
     'uid': ""
 }
+
+export const typedLetterColor = "rgba(100, 100, 100, 0.5)";
+export const unTypedLetterColor = "#262626";

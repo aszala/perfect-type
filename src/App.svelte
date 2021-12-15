@@ -1,6 +1,7 @@
 <script>
 import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
+import Header from "./components/Header.svelte"
 
 </script>
 
@@ -9,6 +10,7 @@ import { routes } from './routes'
 	<meta charset="utf-8">
 </svelte:head>
 
+<Header></Header>
 <Router {routes} />
 
 <style>
@@ -34,21 +36,5 @@ import { routes } from './routes'
 		:global(main) {
 			max-width: none;
 		}
-	}
-
-	:global(button) {
-		background-color: transparent;
-		border: 2px solid #472100;
-		display: inline-block;
-		cursor: pointer;
-		color: gray;
-		font-size: 1.2em;
-		padding: 16px 32px;
-		text-decoration: none;
-		transition: color 200ms, background-color 200ms;
-	}
-	:global(button:hover) {
-		background-color: #acacac;
-		color: var(--main-bg-color);
 	}
 </style>
