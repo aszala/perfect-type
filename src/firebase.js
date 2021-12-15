@@ -28,3 +28,21 @@ export function initFirebase() {
     analytics = getAnalytics(app);
     auth = getAuth();
 }
+
+export function getUser() {
+    const sUser = sessionStorage.getItem("user");
+
+    if (sUser == null) {
+        return null;
+    }
+
+    if (sUser.length > 0) {
+        return JSON.parse(sUser);
+    }
+
+    return null;
+}
+
+export function isLoggedIn() {
+    return getUser() != null;
+}
