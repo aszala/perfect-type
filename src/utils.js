@@ -20,4 +20,4 @@ export const emptyUser = {
     'matchHistory': [],
     'matchHistoryTime': [],
     'uid': ""
-  }
+}
