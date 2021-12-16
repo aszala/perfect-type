@@ -1,6 +1,7 @@
 <script>
 import { createUser } from "../firebase";
 import { validateEmail, redirectHome } from "../utils";
+import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
 
 // svelte-ignore unused-export-let
@@ -56,7 +57,7 @@ function signup(e) {
             </div>
             <br>
             <br>
-            <button>sign up</button>     
+            <PerfectButton text="signup" />     
         </form>
     {/if}
 </main>

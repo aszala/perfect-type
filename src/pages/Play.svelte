@@ -1,9 +1,7 @@
 <script>
   import { promptIndex, wordsToDisplay } from '../stores.js';
   import GameOverDisplay from "../components/GameOverDisplay.svelte"
-  import GameModeDisplay from "../components/GameModeDisplay.svelte"
   import randomWords from 'random-words';
-import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
   // svelte-ignore unused-export-let
   export let currentRoute;
@@ -72,14 +70,9 @@ import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
   function updateLetterColor(event) {
     let letterToChange = document.getElementById(promptIndexValue);
-<<<<<<< HEAD
-    letterToChange.style.color = typedLetterColor;
-    if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
-=======
     letterToChange.classList.add("typed-letter");
 
     //if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
     if (letterToChange.offsetLeft < prevXLocation) {
       letterToChange.parentElement.scrollIntoView(true);
     }
@@ -130,7 +123,7 @@ import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
   :global(.typed-letter) {
     color: var(--main-accent-color);
-    border-bottom: solid var(--main-accent-color) 1px;
+    /* border-bottom: solid var(--main-accent-color) 1px; */
   }
 
   .game-environment {
@@ -165,8 +158,9 @@ import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
   .game-word {
     display:inline-block;
+    color: #272727;
   }
-
+ 
   .game-letter {
     display:inline-block;
     padding: 1px;
@@ -176,14 +170,9 @@ import { typedLetterColor, unTypedLetterColor} from '../utils.js';
 
 <main>
   {#if !gameOver} 
-<<<<<<< HEAD
-    <GameModeDisplay refreshGame={tryAgain}/>
-    <div class="game-environment" id="game-env" use:gameListener>
-=======
     <div class="game-environment noselect" id="game-env" use:gameListener>
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
       {#each randomPromptWordSep as word, i}
-        <div class="game-word" style={`color: ${unTypedLetterColor}`}>
+        <div class="game-word" >
           {#if i != 0}
             <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>&nbsp;</div>
           {/if}
@@ -195,15 +184,7 @@ import { typedLetterColor, unTypedLetterColor} from '../utils.js';
     </div>
     <div id="occlusion"></div>
   {:else}
-<<<<<<< HEAD
     <GameOverDisplay winGame={winGame} wpm={wpm} tryAgain={tryAgain}/>
-=======
-    <div class="game-over-environment">
-      <div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("}</div>
-
-      <button on:click={tryAgain}>{winGame ? "play again" : "try again"}</button>
-    </div>
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
   {/if}
 
 </main>

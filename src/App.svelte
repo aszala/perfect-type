@@ -1,13 +1,10 @@
 <script>
 import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
-<<<<<<< HEAD
 import Header from "./components/Header.svelte"
-=======
 import { initFirebase } from "./firebase"
 
 initFirebase();
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
 
 </script>
 
@@ -22,7 +19,7 @@ initFirebase();
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
-		--main-accent-color: #472100;
+		--main-accent-color: rgba(100, 100, 100, 0.25);
 		--font-color: gray;
 	}
 
@@ -78,33 +75,4 @@ initFirebase();
 			max-width: none;
 		}
 	}
-<<<<<<< HEAD
-=======
-
-	:global(button) {
-		background-color: transparent;
-		border: 2px solid #472100;
-		display: inline-block;
-		cursor: pointer;
-		color: gray;
-		font-size: 1.2em;
-		padding: 16px 32px;
-		text-decoration: none;
-		transition: color 200ms, background-color 200ms;
-	}
-	
-	:global(button:hover) {
-		background-color: var(--main-accent-color);
-		color: var(--main-bg-color);
-	}
-
-	:global(.noselect) {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
 </style>

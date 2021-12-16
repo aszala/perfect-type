@@ -22,10 +22,6 @@ export const emptyUser = {
     'uid': ""
 }
 
-<<<<<<< HEAD
-export const typedLetterColor = "rgba(100, 100, 100, 0.5)";
-export const unTypedLetterColor = "#262626";
-=======
 export function inputType(e, handler) {
     let label = e.target.parentNode.querySelector('label');
 
@@ -37,4 +33,3 @@ export function inputType(e, handler) {
         label.style.fontSize = "1.5em";
     }
 }
->>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
