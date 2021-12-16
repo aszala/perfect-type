@@ -1,6 +1,7 @@
 <script>
 import { createUser } from "../firebase";
-import { validateEmail, redirectHome, inputType } from "../utils";
+import { validateEmail, redirectHome } from "../utils";
+import Input from "../components/Input.svelte";
 
 // svelte-ignore unused-export-let
 export let currentRoute;
@@ -44,21 +45,12 @@ function signup() {
         </p>
     {:else}
         <form>
-            <div class="input-container">
-                <label for="email">email</label>
-                <input id="email" type="email" name="email" autocomplete="email" bind:value={email} on:input="{(e) => inputType(e, signup)}"/>
-            </div>
+            <Input text="email" id="email" type="email" autocomplete="email" handler={signup} bind:value={email} />
             <br>
             <br>  
             <div id="form-container">
-                <div class="input-container">
-                    <label for="password">password</label>
-                    <input id="password" type="password" autocomplete="new-password" name="password" bind:value={password} on:input="{(e) => inputType(e, signup)}"/>
-                </div>
-                <div class="input-container">
-                    <label for="con-password">confirm password</label>
-                    <input id="con-password" type="password" autocomplete="new-password" name="con-password" bind:value={confirmPassword} on:input="{(e) => inputType(e, signup)}"/>
-                </div>
+                <Input text="password" id="password" type="password" autocomplete="new-password" handler={signup} bind:value={password} />
+                <Input text="confirm password" id="con-password" type="password" autocomplete="new-password" handler={signup} bind:value={confirmPassword} />
             </div>
             <br>
             <br>
