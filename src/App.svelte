@@ -17,6 +17,8 @@ initFirebase();
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
+		--main-accent-color: #472100;
+		--font-color: gray;
 	}
 
 	:global(body) {
@@ -24,6 +26,7 @@ initFirebase();
 		padding: 0px;
 		background-color: var(--main-bg-color);
 		overflow: hidden;
+		color: var(--font-color);
 	}
 
 	:global(main) {
@@ -49,14 +52,13 @@ initFirebase();
 		width: 300px;
 		background: transparent;
 		border: none;
-		border-bottom: solid black 2px;
+		border-bottom: solid var(--main-accent-color) 2px;
 		outline: none;
 		font-size: 1.5em;
 		text-align: center;
 	}
 
 	:global(label) {
-		color: gray;
 		font-size: 1.5em;
 		text-align: center;
 		position: absolute;
@@ -84,7 +86,7 @@ initFirebase();
 		transition: color 200ms, background-color 200ms;
 	}
 	:global(button:hover) {
-		background-color: #acacac;
+		background-color: var(--main-accent-color);
 		color: var(--main-bg-color);
 	}
 </style>
