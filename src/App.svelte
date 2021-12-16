@@ -1,7 +1,13 @@
 <script>
 import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
+<<<<<<< HEAD
 import Header from "./components/Header.svelte"
+=======
+import { initFirebase } from "./firebase"
+
+initFirebase();
+>>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
 
 </script>
 
@@ -16,6 +22,8 @@ import Header from "./components/Header.svelte"
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
+		--main-accent-color: #472100;
+		--font-color: gray;
 	}
 
 	:global(body) {
@@ -23,6 +31,7 @@ import Header from "./components/Header.svelte"
 		padding: 0px;
 		background-color: var(--main-bg-color);
 		overflow: hidden;
+		color: var(--font-color);
 	}
 
 	:global(main) {
@@ -32,9 +41,70 @@ import Header from "./components/Header.svelte"
 		margin: 0 auto;
 	}
 
+	:global(#form-container) {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		max-width: 650px;
+		margin: auto;
+	}
+
+	:global(.input-container) {
+		position: relative;
+	}
+
+	:global(input) {
+		width: 300px;
+		background: transparent;
+		border: none;
+		border-bottom: solid var(--main-accent-color) 2px;
+		outline: none;
+		font-size: 1.5em;
+		text-align: center;
+	}
+
+	:global(label) {
+		font-size: 1.5em;
+		text-align: center;
+		position: absolute;
+		top: 10px;
+		width: 100%;
+		text-align: center;
+		transition: font-size 100ms, top 100ms;
+	}
+
 	@media (min-width: 640px) {
 		:global(main) {
 			max-width: none;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	:global(button) {
+		background-color: transparent;
+		border: 2px solid #472100;
+		display: inline-block;
+		cursor: pointer;
+		color: gray;
+		font-size: 1.2em;
+		padding: 16px 32px;
+		text-decoration: none;
+		transition: color 200ms, background-color 200ms;
+	}
+	
+	:global(button:hover) {
+		background-color: var(--main-accent-color);
+		color: var(--main-bg-color);
+	}
+
+	:global(.noselect) {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+>>>>>>> c0ade0fbf00c1277b810e54c70f667f24afac57a
 </style>

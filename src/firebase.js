@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, deleteUser } from "firebase/auth";
-import { emptyUser } from "./utils";
+import { emptyUser, redirectHome } from "./utils";
 
 let app;
 let analytics;
@@ -16,7 +16,7 @@ const USER_COLLECTION = "users";
 
 export function initFirebase() {
     const firebaseConfig = {
-        apiKey: "AIzaSyAcfFLGAnLbwIUCfyCYgayBl2oPvbu5RFQ", // Find a way to hide this
+        apiKey: "AIzaSyAcfFLGAnLbwIUCfyCYgayBl2oPvbu5RFQ",
         authDomain: "perfect-type.firebaseapp.com",
         projectId: "perfect-type",
         storageBucket: "perfect-type.appspot.com",
@@ -63,7 +63,19 @@ export async function createUser(email, password) {
         
         return userCreds.user;
     } catch(e) {
+        console.log(e);
         return null;
+    }
+}
+
+export async function signUserIn(email, password) {
+    try {
+        const userCreds = await signInWithEmailAndPassword(auth, email, password);
+        sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
+
+        return userCreds.user;
+    } catch(e) {
+        return null
     }
 }
 
@@ -72,4 +84,14 @@ export async function createDocument(collection, docID, data) {
 	await setDoc(docRef, data);
 
 	return data;
+}
+
+export async function logoutUser() {
+    try {
+        await signOut();
+    } catch (e) {
+    }
+
+    sessionStorage.setItem(USER_STORAGE_ID, "");
+    redirectHome();
 }
