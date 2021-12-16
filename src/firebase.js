@@ -50,7 +50,7 @@ export function isLoggedIn() {
     return getUser() != null;
 }
 
-export async function createUser(email, password) {
+export async function createUser(email, password) { // Encrypt passwords
     try {
 	    const userCreds = await createUserWithEmailAndPassword(auth, email, password);
         sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
@@ -71,7 +71,7 @@ export async function signUserIn(email, password) {
     try {
         const userCreds = await signInWithEmailAndPassword(auth, email, password);
         sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
-        
+
         return userCreds.user;
     } catch(e) {
         return null
