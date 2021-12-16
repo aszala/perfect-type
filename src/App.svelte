@@ -20,7 +20,7 @@ initFirebase();
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
 		--main-accent-color: rgba(100, 100, 100, 0.25);
-		--font-color: gray;
+		--font-color: rgb(51, 51, 51);
 	}
 
 	:global(body) {

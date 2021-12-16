@@ -1,6 +1,7 @@
 <script>
   import { promptIndex, wordsToDisplay } from '../stores.js';
   import GameOverDisplay from "../components/GameOverDisplay.svelte"
+  import GameModes from "../components/GameModes.svelte"
   import randomWords from 'random-words';
 
   // svelte-ignore unused-export-let
@@ -23,7 +24,7 @@
   });
 
   function generateRandomString() {
-    let promptLength = 10;
+    let promptLength = 5;
     wordsToDisplay.subscribe(value => {
       promptLength = value;
     })
@@ -32,7 +33,6 @@
 
   function gameListener() {
     const handleClick = (event) => {
-      console.log(randomPrompt  )
       event.preventDefault();
       if (!gameOver) {
         
@@ -50,12 +50,13 @@
 
         // winning game - all letters are typed correctly
         if (promptIndexValue == randomPrompt.length) {
+          
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
           wpm = Math.round(randomPromptWordSep.length / totalMinutes * 1000) / 1000;
           gameOver = true;
           winGame = true;
-          // TODO: write "wpm" to database
+          // TODO: write "wpm" to database with respective "mode"
 
         }
       }
@@ -115,7 +116,26 @@
     randomPromptWordSep = randomPrompt.split(" ");
     promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
     for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
+    mode = mode;
   }
+
+  // - GAME MODE VARIABLES - 
+  let mode = "easy";
+  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
+  function changeMode(e) {
+    let currentModeDiv = document.getElementById(mode);
+    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
+    let newModeDiv = document.getElementById(e.target.innerHTML);
+    newModeDiv.className += ' active-mode';
+    mode = e.target.innerHTML
+    wordsToDisplay.update(() => gameModeWordAmount[mode]);
+    for (let i = 0; i < promptIndexValue; i++) {
+      let letterToChange = document.getElementById(i);
+      letterToChange.classList.remove("typed-letter");
+    }
+    tryAgain();
+  }
+  
 
 </script>
 
@@ -170,6 +190,8 @@
 
 <main>
   {#if !gameOver} 
+  <GameModes mode={mode} changeMode={changeMode}/>
+  <!-- game components : start -->
     <div class="game-environment noselect" id="game-env" use:gameListener>
       {#each randomPromptWordSep as word, i}
         <div class="game-word" >
@@ -183,6 +205,7 @@
       {/each}
     </div>
     <div id="occlusion"></div>
+    <!-- game components : end -->
   {:else}
     <GameOverDisplay winGame={winGame} wpm={wpm} tryAgain={tryAgain}/>
   {/if}
