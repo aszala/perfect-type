@@ -11,7 +11,11 @@ export let params;
 let success = false;
 let email, password, confirmPassword;
 
-function signup() {
+function signup(e) {
+    if (e) {
+        e.preventDefault();
+    }
+
     if (!validateEmail(email)) {
       alert("Invalid email!")
       return
@@ -44,17 +48,17 @@ function signup() {
             signed up and logged in! redirecting to main...
         </p>
     {:else}
-        <form>
-            <Input text="email" id="email" type="email" autocomplete="email" handler={signup} bind:value={email} />
+        <form on:submit={signup}>
+            <Input text="email" id="email" type="email" autocomplete="email" bind:value={email} />
             <br>
             <br>  
             <div id="form-container">
-                <Input text="password" id="password" type="password" autocomplete="new-password" handler={signup} bind:value={password} />
-                <Input text="confirm password" id="con-password" type="password" autocomplete="new-password" handler={signup} bind:value={confirmPassword} />
+                <Input text="password" id="password" type="password" autocomplete="new-password" bind:value={password} />
+                <Input text="confirm password" id="con-password" type="password" autocomplete="new-password" bind:value={confirmPassword} />
             </div>
             <br>
             <br>
-            <button on:click={signup}>sign up</button>     
+            <button>sign up</button>     
         </form>
-        {/if}
+    {/if}
 </main>

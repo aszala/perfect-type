@@ -7,11 +7,10 @@ export let text;
 export let id;
 export let autocomplete;
 export let type = "text";
-export let handler;
 
 const handleInput = e => {
     value = e.target.value;
-    inputType(e, handler);
+    inputType(e);
 };
 
 </script>
