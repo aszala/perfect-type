@@ -1,6 +1,9 @@
 <script>
 import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
+import { initFirebase } from "./firebase"
+
+initFirebase();
 
 </script>
 
@@ -14,6 +17,8 @@ import { routes } from './routes'
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
+		--main-accent-color: #472100;
+		--font-color: gray;
 	}
 
 	:global(body) {
@@ -21,6 +26,7 @@ import { routes } from './routes'
 		padding: 0px;
 		background-color: var(--main-bg-color);
 		overflow: hidden;
+		color: var(--font-color);
 	}
 
 	:global(main) {
@@ -28,6 +34,38 @@ import { routes } from './routes'
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
+	}
+
+	:global(#form-container) {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		max-width: 650px;
+		margin: auto;
+	}
+
+	:global(.input-container) {
+		position: relative;
+	}
+
+	:global(input) {
+		width: 300px;
+		background: transparent;
+		border: none;
+		border-bottom: solid var(--main-accent-color) 2px;
+		outline: none;
+		font-size: 1.5em;
+		text-align: center;
+	}
+
+	:global(label) {
+		font-size: 1.5em;
+		text-align: center;
+		position: absolute;
+		top: 10px;
+		width: 100%;
+		text-align: center;
+		transition: font-size 100ms, top 100ms;
 	}
 
 	@media (min-width: 640px) {
@@ -47,8 +85,18 @@ import { routes } from './routes'
 		text-decoration: none;
 		transition: color 200ms, background-color 200ms;
 	}
+	
 	:global(button:hover) {
-		background-color: #acacac;
+		background-color: var(--main-accent-color);
 		color: var(--main-bg-color);
+	}
+
+	:global(.noselect) {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 </style>
