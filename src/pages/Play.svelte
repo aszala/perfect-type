@@ -1,5 +1,6 @@
 <script>
-  import { promptIndex } from '../stores.js';
+  import { promptIndex, wordsToDisplay } from '../stores.js';
+  import GameOverDisplay from "../components/GameOverDisplay.svelte"
   import randomWords from 'random-words';
 
   // svelte-ignore unused-export-let
@@ -12,12 +13,7 @@
     return this[Math.floor((Math.random()*this.length))];
   }
 
-  function generateRandomString() {
-    return randomWords(30).join(" ");
-  }
-
   let randomPrompt = generateRandomString();
-  console.log(randomPrompt)
   let randomPromptWordSep = randomPrompt.split(" ");
   let promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
   for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
@@ -26,8 +22,17 @@
     promptIndexValue = value;
   });
 
+  function generateRandomString() {
+    let promptLength = 10;
+    wordsToDisplay.subscribe(value => {
+      promptLength = value;
+    })
+    return randomWords(promptLength).join(" ");
+  }
+
   function gameListener() {
     const handleClick = (event) => {
+      console.log(randomPrompt  )
       event.preventDefault();
       if (!gameOver) {
         
@@ -36,10 +41,7 @@
 
         // losing game
         if (randomPrompt.charAt(promptIndexValue) !== event.key) {
-          startTime = 0;
           gameOver = true;
-          prevXLocation = 0;
-          prevLetter = 0;
         } else {
           // updates letter if typed ccorrectly
           updateLetterColor(event)
@@ -51,11 +53,8 @@
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
           wpm = Math.round(randomPromptWordSep.length / totalMinutes * 1000) / 1000;
-          startTime = 0;
           gameOver = true;
           winGame = true;
-          prevXLocation = 0;
-          prevLetter = 0;
           // TODO: write "wpm" to database
 
         }
@@ -106,6 +105,9 @@
   let wpm = 0;
 
   function tryAgain() {
+    startTime = 0;
+    prevXLocation = 0;
+    prevLetter = 0;
     promptIndex.update(() => 0);
     gameOver = false;
     winGame = false;
@@ -121,7 +123,7 @@
 
   :global(.typed-letter) {
     color: var(--main-accent-color);
-    border-bottom: solid var(--main-accent-color) 1px;
+    /* border-bottom: solid var(--main-accent-color) 1px; */
   }
 
   .game-environment {
@@ -156,21 +158,13 @@
 
   .game-word {
     display:inline-block;
+    color: #272727;
   }
-
+ 
   .game-letter {
     display:inline-block;
     padding: 1px;
   }
-
-  .game-over-environment {
-    /* todo */
-  }
-
-  .game-over-div {
-    /* todo  */
-  }
-
 </style>
 
 
@@ -178,7 +172,7 @@
   {#if !gameOver} 
     <div class="game-environment noselect" id="game-env" use:gameListener>
       {#each randomPromptWordSep as word, i}
-        <div class="game-word">
+        <div class="game-word" >
           {#if i != 0}
             <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>&nbsp;</div>
           {/if}
@@ -190,11 +184,7 @@
     </div>
     <div id="occlusion"></div>
   {:else}
-    <div class="game-over-environment">
-      <div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("}</div>
-
-      <button on:click={tryAgain}>{winGame ? "play again" : "try again"}</button>
-    </div>
+    <GameOverDisplay winGame={winGame} wpm={wpm} tryAgain={tryAgain}/>
   {/if}
 
 </main>

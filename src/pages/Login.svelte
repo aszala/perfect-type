@@ -1,6 +1,7 @@
 <script>
 import { signUserIn } from "../firebase";
 import { redirectHome } from "../utils";
+import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
 
 // svelte-ignore unused-export-let
@@ -28,7 +29,7 @@ function login(e) {
 </script>
 
 <main>
-    <h1>log in</h1>
+    <h1>login</h1>
     {#if success}
         <p>logged in! redirecting to main...</p>
     {:else}
@@ -41,7 +42,7 @@ function login(e) {
             </div>
             <br>
             <br>
-            <button>log in</button>     
+            <PerfectButton text="login"/>     
         </form>
     {/if}
 </main>
