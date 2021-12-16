@@ -71,8 +71,9 @@
 
   function updateLetterColor(event) {
     let letterToChange = document.getElementById(promptIndexValue);
-    letterToChange.style.color = "rgba(100, 100, 100, 0.5)";
-    if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
+    letterToChange.classList.add("typed-letter");
+
+    //if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
     if (letterToChange.offsetLeft < prevXLocation) {
       letterToChange.parentElement.scrollIntoView(true);
     }
@@ -118,6 +119,10 @@
 
 <style>
 
+  :global(.typed-letter) {
+    color: var(--main-accent-color);
+    border-bottom: solid var(--main-accent-color) 1px;
+  }
 
   .game-environment {
     position: absolute;
@@ -126,13 +131,29 @@
     right: 100px;
     bottom: 0;
     left: 100px;
-    width: auto;
+    width: 80%;
     height: 190px;
-    overflow: scroll;
+    overflow: hidden;
     font-size: 10mm;
     overflow: hidden;
-
+    line-height: 50px;
+    transition: color 200ms;
+    scroll-behavior: smooth;
   }
+
+  #occlusion {
+    margin: auto;
+    top: 0;
+    right: 100px;
+    bottom: 0;
+    left: 100px;
+    width: 80%;
+    height: 190px;
+    background: linear-gradient(transparent, var(--main-bg-color));
+    position: absolute;
+    
+  }
+
   .game-word {
     display:inline-block;
   }
@@ -155,26 +176,24 @@
 
 <main>
   {#if !gameOver} 
-    <div class="game-environment" id="game-env" use:gameListener>
+    <div class="game-environment noselect" id="game-env" use:gameListener>
       {#each randomPromptWordSep as word, i}
         <div class="game-word">
           {#if i != 0}
-            <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>
-              {" "}
-            </div>
+            <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>&nbsp;</div>
           {/if}
           {#each word as letter, j}
-            <div class="game-letter" id={ (i-1) < 0 ? `${j}` : `${promptWordLengths[i-1] + j}`}>
-              {letter}
-            </div>
+            <div class="game-letter" id={ (i-1) < 0 ? `${j}` : `${promptWordLengths[i-1] + j}`}>{letter}</div>
           {/each}
         </div>
       {/each}
     </div>
+    <div id="occlusion"></div>
   {:else}
     <div class="game-over-environment">
-      <div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("} </div>
-      <button on:click={tryAgain}>{winGame ? "play again" : "try again"} </button>
+      <div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("}</div>
+
+      <button on:click={tryAgain}>{winGame ? "play again" : "try again"}</button>
     </div>
   {/if}
 

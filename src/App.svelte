@@ -85,8 +85,18 @@ initFirebase();
 		text-decoration: none;
 		transition: color 200ms, background-color 200ms;
 	}
+	
 	:global(button:hover) {
 		background-color: var(--main-accent-color);
 		color: var(--main-bg-color);
+	}
+
+	:global(.noselect) {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 </style>
