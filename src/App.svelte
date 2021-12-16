@@ -1,6 +1,9 @@
 <script>
 import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
+import { initFirebase } from "./firebase"
+
+initFirebase();
 
 </script>
 

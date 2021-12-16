@@ -63,6 +63,7 @@ export async function createUser(email, password) { // Encrypt passwords
         
         return userCreds.user;
     } catch(e) {
+        console.log(e);
         return null;
     }
 }

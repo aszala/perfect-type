@@ -44,9 +44,7 @@ function signup(e) {
 <main>
     <h1>sign up</h1>
     {#if success}
-        <p>
-            signed up and logged in! redirecting to main...
-        </p>
+        <p>signed up and logged in! redirecting to main...</p>
     {:else}
         <form on:submit={signup}>
             <Input text="email" id="email" type="email" autocomplete="email" bind:value={email} />
