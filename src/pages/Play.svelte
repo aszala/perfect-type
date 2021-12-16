@@ -2,6 +2,11 @@
   import { promptIndex } from '../stores.js';
   import randomWords from 'random-words';
 
+  // svelte-ignore unused-export-let
+  export let currentRoute;
+  // svelte-ignore unused-export-let
+  export let params;
+
   //  - PROMPT PROCESSING -
   Array.prototype.random = function() {
     return this[Math.floor((Math.random()*this.length))];
