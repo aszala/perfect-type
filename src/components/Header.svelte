@@ -24,9 +24,10 @@ a:hover {
 
 <main>
   <div class="header">
-    <a href="/analytics">analytics</a>
+    <a href="/profile">profile</a>
     <a href="/signup">signup</a>
     <a href="/login">login</a>
+    <a href="/leaderboard">leaderboard</a>
     <a href="/">play</a>
   </div>
 

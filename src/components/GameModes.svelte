@@ -11,7 +11,8 @@
     justify-content: center;
     align-content: center;
     text-align: center;
-    vertical-align: middle
+    vertical-align: middle;
+    user-select: none;
     /* border: 1mm solid black; */
   }
   .mode-div {

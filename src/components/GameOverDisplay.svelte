@@ -14,7 +14,7 @@
     bottom: 0;
     left: 100px;
     width: auto;
-    height: 300px;
+    height: 500px;
     overflow: scroll;
     font-size: 10mm;
     overflow: hidden;

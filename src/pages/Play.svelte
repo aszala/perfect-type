@@ -185,6 +185,11 @@
     display:inline-block;
     padding: 1px;
   }
+
+  /* this is to help with autoscrolling */
+  .invisible-letter {
+    color: rgb(0, 0, 0, 0);
+  }
 </style>
 
 
@@ -201,6 +206,11 @@
           {#each word as letter, j}
             <div class="game-letter" id={ (i-1) < 0 ? `${j}` : `${promptWordLengths[i-1] + j}`}>{letter}</div>
           {/each}
+        </div>
+      {/each}
+      {#each [...Array(10).keys()] as num, i}
+        <div>
+          <div class="game-letter invisible-letter">if you see this sentence, you're awesome</div>
         </div>
       {/each}
     </div>
