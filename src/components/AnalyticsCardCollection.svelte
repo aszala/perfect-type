@@ -1,8 +1,10 @@
 <style>
   .analytics-card-collection {
     justify-content: center;
-    display: flex;
+    display:inline-flex;
     padding: 15px;
+    align-items: center;
+    justify-content: center;
   }
 </style>
 

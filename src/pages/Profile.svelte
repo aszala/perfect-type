@@ -1,6 +1,7 @@
 <script>
   import AnalyticsCard from "../components/AnalyticsCard.svelte";
   import AnalyticsCardCollection from "../components/AnalyticsCardCollection.svelte";
+  import StatisticsBlock from "../components/StatisticsBlock.svelte"
 
   // get from api
   let gamesPlayed = 10; 
@@ -33,7 +34,7 @@
 <style>
   img {
     border-radius: 50%;
-    height: 100px;
+    height: 50px;
     width: auto;
   }
 
@@ -43,37 +44,21 @@
   <h1>profile</h1>
   <AnalyticsCardCollection>
     <AnalyticsCard>
-      <h2>user information</h2>
-      <img {src} alt="Avatar" />
-      <br>
-      {`username: ${userName}`}
+      <StatisticsBlock title={userName}> <img {src} alt="Avatar" /></StatisticsBlock>
     </AnalyticsCard>
     <AnalyticsCard>
-
-      <h2>total games</h2>
-      {"overall: " + gamesPlayed}
-      <br>
-      {"easy: " + easyGamesPlayed}
-      {" - medium: " + mediumGamesPlayed}
-      {" - hard: " + hardGamesPlayed}
-
-      <h2>avg words per minute</h2>
-      {"overall: " + avgWPM}
-      <br>
-      {"easy: " + avgEasyWPM}
-      {" - medium: " + avgMediumWPM}
-      {" - hard: " + avgHardWPM}
-
-      <h2>avg letters per minute</h2>
-      {"overall: " + avgLPM}
-      <br>
-      {"easy: " + avgEasyLPM}
-      {" - medium: " + avgMediumLPM}
-      {" - hard: " + avgHardLPM}
+      <StatisticsBlock title="total games" overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>
+    </AnalyticsCard>
+  </AnalyticsCardCollection>
+  <AnalyticsCardCollection>
+    <AnalyticsCard>
+      <StatisticsBlock title="avg words per minute " overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} units=""/>
     </AnalyticsCard>
     <AnalyticsCard>
-      <h2>success rate</h2>
-      use pie charts here
+      <StatisticsBlock title="avg letters per minute" overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
+    </AnalyticsCard>
+    <AnalyticsCard>
+      <StatisticsBlock title="pass rate" overall={passRate} easy={easyPassRate} medium={mediumPassRate} hard={hardPassRate} units="%"/>
     </AnalyticsCard>
   </AnalyticsCardCollection>
   

@@ -1,6 +1,5 @@
 <!-- must go inside of a card collection -->
 <script>
-  export let title;
 </script>
 
 <style>
@@ -9,8 +8,8 @@
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     border-radius: 5px; /* 5px rounded corners */
-    width: 500px;
-    height: 400px;
+
+    min-height: 255px;
     padding: 10px;
   }
 
@@ -26,8 +25,10 @@
 </style>
 
 
-<div class="card">
-  <div class="container">
-    <p><slot>default card</slot></p>
+<main>
+  <div class="card">
+    <div class="container">
+      <p><slot>default card</slot></p>
+    </div>
   </div>
-</div>
+</main>
