@@ -20,10 +20,10 @@
     width:100px;
     height: 30px;
     padding: 2px;
+    cursor: pointer;
   }
 
-  .mode-div:hover {
-    cursor:default;
+  .inactive-mode:hover {
     border-bottom: .25mm solid rgba(68, 68, 68, 0.5);
   }
 
@@ -34,7 +34,7 @@
 </style>
 
 <div class="mode-container">
-  <div class={`mode-div ${mode === 'easy' ? 'active-mode' : ""}`} id="easy" on:click={changeMode}>easy</div>
-  <div class={`mode-div ${mode === 'medium' ? 'active-mode' : ""}`} id="medium" on:click={changeMode}>medium</div>
-  <div class={`mode-div ${mode === 'hard' ? 'active-mode' : ""}`} id="hard" on:click={changeMode}>hard</div>
+  <div class={`mode-div ${mode === 'easy' ? 'active-mode' : "inactive-mode"}`} id="easy" on:click={changeMode}>easy</div>
+  <div class={`mode-div ${mode === 'medium' ? 'active-mode' : "inactive-mode"}`} id="medium" on:click={changeMode}>medium</div>
+  <div class={`mode-div ${mode === 'hard' ? 'active-mode' : "inactive-mode"}`} id="hard" on:click={changeMode}>hard</div>
 </div>
