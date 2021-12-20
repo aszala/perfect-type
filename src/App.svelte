@@ -13,7 +13,7 @@ initFirebase();
 	<meta charset="utf-8">
 </svelte:head>
 
-<Header></Header>
+<Header />
 <Router {routes} />
 
 <style>
