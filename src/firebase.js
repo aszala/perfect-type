@@ -13,6 +13,7 @@ const sessionStorage = window.sessionStorage;
 
 const USER_STORAGE_ID = "user";
 const USER_COLLECTION = "users";
+const LEADERBOARD_COLLECTION = "leaderboard";
 
 export function initFirebase() {
     const firebaseConfig = {
@@ -94,4 +95,12 @@ export async function logoutUser() {
 
     sessionStorage.setItem(USER_STORAGE_ID, "");
     redirectHome();
+}
+
+
+ export async function getLeaderboard(board) {
+    const docRef = doc(db, LEADERBOARD_COLLECTION, board);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    return data
 }
