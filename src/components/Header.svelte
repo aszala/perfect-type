@@ -10,14 +10,16 @@
 
 a {
   float: right;
-  color: black;
+  color: var(--font-color);
   text-align: center;
   padding: 15px;
-  font-size: 17px;
+  font-size: 1.3em;
+  transition: color 200ms;
 }
 
 a:hover {
   color: black;
+  text-decoration: none;
 }
 
 </style>
