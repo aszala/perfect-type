@@ -19,7 +19,7 @@ initFirebase();
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
-		--main-accent-color: rgba(100, 100, 100, 0.25);
+		--main-accent-color: rgb(58, 34, 3);
 		--font-color: rgb(51, 51, 51);
 	}
 
@@ -83,7 +83,7 @@ initFirebase();
 	}
 
 	:global(button:hover) {
-		background-color: #acacac;
+		background-color: var(--main-accent-color);
 		color: var(--main-bg-color);
 	}
 
