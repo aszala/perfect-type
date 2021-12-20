@@ -1,0 +1,9 @@
+<script>
+    import { logoutUser } from "../firebase";
+
+    logoutUser();
+</script>
+
+<main>
+    <h1>Logging you out</h1>
+</main>

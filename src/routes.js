@@ -1,9 +1,10 @@
 import Play from "./pages/Play.svelte";
 import Login from "./pages/Login.svelte";
 import Signup from "./pages/Signup.svelte";
-import Profile from "./pages/Profile.svelte"
-import Leaderboard from "./pages/Leaderboard.svelte"
-import NotFound from "./pages/404.svelte"
+import Profile from "./pages/Profile.svelte";
+import Leaderboard from "./pages/Leaderboard.svelte";
+import NotFound from "./pages/404.svelte";
+import Logout from "./pages/Logout.svelte";
 
 import { isLoggedIn } from "./firebase"
 
@@ -34,6 +35,11 @@ const routes = [
     {
         name: "leaderboard",
         component: Leaderboard,
+        onlyIf: { guard: isLoggedIn, redirect: "/" }
+    },
+    {
+        name: "logout",
+        component: Logout,
         onlyIf: { guard: isLoggedIn, redirect: "/" }
     },
     {

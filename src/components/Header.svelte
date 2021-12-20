@@ -30,11 +30,11 @@ a:hover {
 <main>
   <div class="header">
     {#if loggedIn}
-    <a href="/profile">profile</a>
-    <a href="/logout">logout</a>
+      <a href="/profile">profile</a>
+      <a href="/logout">logout</a>
     {:else}
-    <a href="/signup">signup</a>
-    <a href="/login">login</a>
+      <a href="/signup">signup</a>
+      <a href="/login">login</a>
     {/if}
     <a href="/leaderboard">leaderboard</a>
     <a href="/">play</a>
