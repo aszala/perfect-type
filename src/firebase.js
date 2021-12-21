@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { emptyUser, redirectHome } from "./utils";
 
@@ -16,7 +16,6 @@ const USER_COLLECTION = "users";
 const LEADERBOARD_COLLECTION = "leaderboard";
 const USERINFO_COLLECTION = "userinfo"
 const defaultUserInfoObject = {
-    avgWPM: 0,
     easyGamesFailed: 0,
     easyGamesWon: 0,
     easyLPM: 0,
@@ -127,4 +126,52 @@ export async function getUserProfile(userID) {
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
     return data
+}
+
+export async function updateUserStats(userID, changedStats) {
+    const docRef = doc(db, USERINFO_COLLECTION, userID);
+    const res = await updateDoc(docRef, changedStats);
+}
+
+export async function getUserStats(userID, stat) {
+    const docRef = doc(db, USERINFO_COLLECTION, userID);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data()[stat];
+    return data;
+}
+
+export async function getOnWinStats(userID, neededGameWin, neededLPM, neededWPM) {
+    const docRef = doc(db, USERINFO_COLLECTION, userID);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    const res = {};
+    res[neededGameWin] = data[neededGameWin];
+    res[neededLPM] = data[neededLPM];
+    res[neededWPM] = data[neededWPM];
+    return res
+}
+
+export async function updateToLeaderboard(user, leadboardType, score) {
+    getLeaderboard(leadboardType).then( res => {
+        const data = []
+        let updateToLeaderboard = false;
+        for (let i = 0; i < res.data.length; i++) {
+            if (!updateToLeaderboard) {
+                let elt = JSON.parse(res.data[i]);
+                if (score > elt.score) {
+                    let today = new Date(); 
+                    let dd = today.getDate(); 
+                    let mm = today.getMonth()+1; 
+                    let yyyy = today.getFullYear(); 
+                    data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
+                    updateToLeaderboard = true
+                } 
+            }
+            if (!(updateToLeaderboard && i == res.data.length - 1)) data.push(res.data[i])
+        }
+        if (updateToLeaderboard) {
+            const docRef = doc(db, LEADERBOARD_COLLECTION, leadboardType);
+            updateDoc(docRef, {data});
+        }
+    })
 }

@@ -3,6 +3,9 @@
   import GameOverDisplay from "../components/GameOverDisplay.svelte"
   import GameModes from "../components/GameModes.svelte"
   import randomWords from 'random-words';
+  import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
+  
+  let loggedIn = isLoggedIn();
 
   // svelte-ignore unused-export-let
   export let currentRoute;
@@ -41,22 +44,44 @@
 
         // losing game
         if (randomPrompt.charAt(promptIndexValue) !== event.key) {
-          gameOver = true;
+          gameOver = true; 
+          if (loggedIn) {
+            // write losing game
+            let docElement = mode+"GamesFailed";
+            getUserStats(getUser().uid, docElement).then( res => {
+              let updatedInfo = {};
+              updatedInfo[docElement] = res + 1;
+              updateUserStats(getUser().uid, updatedInfo);
+            })
+          }
         } else {
           // updates letter if typed ccorrectly
           updateLetterColor(event)
           promptIndex.update(n => n + 1);
         }
-
         // winning game - all letters are typed correctly
         if (promptIndexValue == randomPrompt.length) {
-          
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
+          let lpm = Math.round(randomPrompt.length / totalMinutes * 1000) / 1000;
           wpm = Math.round(randomPromptWordSep.length / totalMinutes * 1000) / 1000;
           gameOver = true;
           winGame = true;
-          // TODO: write "wpm" to database with respective "mode"
+          if (loggedIn) {
+            // write winning game
+            let neededGameWin = mode + "GamesWon";
+            let neededLPM = mode + "LPM";
+            let neededWPM = mode + "WPM";
+            getOnWinStats(getUser().uid, neededGameWin, neededLPM, neededWPM).then( res => {
+              let updatedInfo = {};
+              updatedInfo[neededGameWin] = res[neededGameWin] + 1;
+              updatedInfo[neededLPM] = Math.round((res[neededLPM]*res[neededGameWin] + lpm) / updatedInfo[neededGameWin] * 1000) / 1000;
+              updatedInfo[neededWPM] = Math.round((res[neededWPM]*res[neededGameWin] + wpm) / updatedInfo[neededGameWin] * 1000) / 1000;
+              updateUserStats(getUser().uid, updatedInfo);
+            })
+            let leaderboardType = mode + "_wpm"
+            updateToLeaderboard(getUser(), leaderboardType, wpm);
+          }
 
         }
       }
