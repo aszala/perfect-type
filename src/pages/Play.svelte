@@ -142,7 +142,7 @@
 <style>
 
   :global(.typed-letter) {
-    color: var(--main-accent-color);
+    color: rgba(75, 75, 75, 0.25);
     /* border-bottom: solid var(--main-accent-color) 1px; */
   }
 

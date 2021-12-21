@@ -35,7 +35,6 @@ const routes = [
     {
         name: "leaderboard",
         component: Leaderboard,
-        onlyIf: { guard: guard, redirect: "/" }
     },
     {
         name: "logout",
