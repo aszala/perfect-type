@@ -14,6 +14,22 @@ const sessionStorage = window.sessionStorage;
 const USER_STORAGE_ID = "user";
 const USER_COLLECTION = "users";
 const LEADERBOARD_COLLECTION = "leaderboard";
+const USERINFO_COLLECTION = "userinfo"
+const defaultUserInfoObject = {
+    avgWPM: 0,
+    easyGamesFailed: 0,
+    easyGamesWon: 0,
+    easyLPM: 0,
+    easyWPM: 0,
+    hardGamesFailed: 0,
+    hardGamesWon: 0,
+    hardLPM: 0,
+    hardWPM: 0,
+    mediumGamesFailed: 0,
+    mediumGamesWon: 0,
+    mediumLPM: 0,
+    mediumWPM: 0,
+}
 
 export function initFirebase() {
     const firebaseConfig = {
@@ -61,6 +77,7 @@ export async function createUser(email, password) {
         userData.email = userCreds.user.email;
 
         await createDocument(USER_COLLECTION, userData.uid, userData);
+        await createDocument(USERINFO_COLLECTION, userData.uid, defaultUserInfoObject)
         
         return userCreds.user;
     } catch(e) {
@@ -98,8 +115,15 @@ export async function logoutUser() {
 }
 
 
- export async function getLeaderboard(board) {
+export async function getLeaderboard(board) {
     const docRef = doc(db, LEADERBOARD_COLLECTION, board);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    return data
+}
+
+export async function getUserProfile(userID) {
+    const docRef = doc(db, USERINFO_COLLECTION, userID);
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
     return data

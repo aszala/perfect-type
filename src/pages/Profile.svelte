@@ -2,32 +2,33 @@
   import AnalyticsCard from "../components/AnalyticsCard.svelte";
   import AnalyticsCardCollection from "../components/AnalyticsCardCollection.svelte";
   import StatisticsBlock from "../components/StatisticsBlock.svelte"
+  import { getUser, getUserProfile } from "../firebase";
 
-  // get from api
-  let gamesPlayed = 10; 
-  let easyGamesPlayed = 3;
-  let mediumGamesPlayed = 4;
-  let hardGamesPlayed = 5;
-  
-  let userName = "davidlurocks69"; 
-
-  let avgWPM = 69;
-  let avgEasyWPM = 60;
-  let avgMediumWPM = 50;
-  let avgHardWPM = 40;
-
-  let avgLPM = 69;
-  let avgEasyLPM = 60;
-  let avgMediumLPM = 50;
-  let avgHardLPM = 40;
-  
-
-  let passRate = 30;
-  let easyPassRate = 50;
-  let mediumPassRate = 40;
-  let hardPassRate = 30;
-
+  let gamesPlayed, easyGamesPlayed, mediumGamesPlayed, hardGamesPlayed;
+  let userName = getUser().email.substr(0, getUser().email.indexOf("@"))
+  let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM;
+  let avgLPM, avgEasyLPM, avgMediumLPM, avgHardLPM;
+  let passRate, easyPassRate, mediumPassRate, hardPassRate;
   let src = '../../fart.png';
+
+  getUserProfile(getUser().uid).then( res => {
+    easyGamesPlayed = res.easyGamesFailed + res.easyGamesWon;
+    mediumGamesPlayed = res.mediumGamesFailed + res.mediumGamesWon;
+    hardGamesPlayed = res.hardGamesFailed + res.hardGamesWon;
+    gamesPlayed = easyGamesPlayed + mediumGamesPlayed + hardGamesPlayed;
+    avgEasyWPM = res.easyWPM;
+    avgEasyLPM = res.easyLPM;
+    avgMediumWPM = res.mediumWPM;
+    avgMediumLPM = res.mediumLPM;
+    avgHardWPM = res.hardWPM;
+    avgHardLPM = res.hardLPM;
+    avgWPM = gamesPlayed != 0 ? (avgEasyWPM*easyGamesPlayed + avgMediumWPM*mediumGamesPlayed + avgHardWPM*hardGamesPlayed) / gamesPlayed : 0;
+    avgLPM = gamesPlayed != 0 ? (avgEasyLPM *easyGamesPlayed + avgMediumLPM*mediumGamesPlayed + avgHardLPM*hardGamesPlayed) / gamesPlayed : 0;
+    easyPassRate = easyGamesPlayed != 0 ? Math.round(res.easyGamesWon / easyGamesPlayed * 100) / 100 : 0;
+    mediumPassRate = mediumGamesPlayed != 0 ?  Math.round(res.mediumGamesWon / mediumGamesPlayed * 100) / 100 : 0;
+    hardPassRate = hardGamesPlayed != 0 ? Math.round(res.hardGamesWon / hardGamesPlayed * 100) / 100 : 0;
+    passRate = gamesPlayed != 0 ? Math.round((res.easyGamesWon + res.mediumGamesWon + res.hardGamesWon ) / gamesPlayed * 100) / 100: 0;
+  })
 
 </script>
 
