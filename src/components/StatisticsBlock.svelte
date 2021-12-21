@@ -34,7 +34,7 @@
   {#if (overall == null)}
     <slot></slot>
   {:else}
-    <p>{`overall: ${overall}${units}`}</p>
+    <p>{`overall: ${Math.round(overall * 100) / 100}${units}`}</p>
     <table class="center-table">
       <tr>
         <td class="heading">easy</td>
@@ -42,9 +42,9 @@
         <td class="heading">hard</td>
       </tr>
       <tr>
-        <td>{`${easy}${units}`}</td>
-        <td>{`${medium}${units}`}</td>
-        <td>{`${hard}${units}`}</td>
+        <td>{`${Math.round(easy * 100) / 100}${units}`}</td>
+        <td>{`${Math.round(medium * 100) / 100}${units}`}</td>
+        <td>{`${Math.round(hard * 100) / 100}${units}`}</td>
       </tr>
     </table>
   {/if}

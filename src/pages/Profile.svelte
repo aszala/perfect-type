@@ -59,7 +59,7 @@
       <StatisticsBlock title="avg letters per minute" overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
     </AnalyticsCard>
     <AnalyticsCard>
-      <StatisticsBlock title="pass rate" overall={passRate} easy={easyPassRate} medium={mediumPassRate} hard={hardPassRate} units="%"/>
+      <StatisticsBlock title="pass rate" overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
     </AnalyticsCard>
   </AnalyticsCardCollection>
   
