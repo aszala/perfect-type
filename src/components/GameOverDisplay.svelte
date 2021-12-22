@@ -23,12 +23,13 @@
   .game-over-div {
     /* todo  */
 		padding: 20px;
-		font-size: 20mm;
+		font-size: 15mm;
   }
 
 </style>
 
 <div class="game-over-environment">
-	<div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("} </div>
+	<div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("}</div>
+  <br><br>
 	<PerfectButton onClickFn={tryAgain} text={winGame ? "play again" : "try again"}/>
 </div>
