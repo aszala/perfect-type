@@ -3,6 +3,7 @@ import { signUserIn, sendVerifcationEmailAsync, getUser } from "../firebase";
 import { redirectHome } from "../utils";
 import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
+import { fade } from "svelte/transition"
 
 // svelte-ignore unused-export-let
 export let currentRoute;
@@ -58,9 +59,9 @@ function resend() {
 <main>
     <h1>login</h1>
     {#if success}
-        <p>logged in! redirecting to main...</p>
+        <p in:fade>logged in! redirecting to main...</p>
     {:else}
-        <form on:submit={login}>
+        <form in:fade on:submit={login}>
             <br>
             <br>  
             <div id="form-container">
@@ -72,9 +73,9 @@ function resend() {
             <PerfectButton text="login"/>
         </form>
         {#if resendError}
-            <p id="error-indicator">Please verify your email! Click <a on:click={resend} href="">here</a> to send another link.</p>
+            <p in:fade id="error-indicator">please verify your email! click <a on:click={resend} href="">here</a> to send another link.</p>
         {:else}
-            <p id="error-indicator">{@html error_message}</p>
+            <p in:fade id="error-indicator">{@html error_message}</p>
         {/if}
     {/if}
 </main>

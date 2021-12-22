@@ -19,18 +19,19 @@
       mediumGamesPlayed = res.mediumGamesFailed + res.mediumGamesWon;
       hardGamesPlayed = res.hardGamesFailed + res.hardGamesWon;
       gamesPlayed = easyGamesPlayed + mediumGamesPlayed + hardGamesPlayed;
+      let gamesWon = res.easyGamesWon + res.mediumGamesWon + res.hardGamesWon;
       avgEasyWPM = res.easyWPM;
       avgEasyLPM = res.easyLPM;
       avgMediumWPM = res.mediumWPM;
       avgMediumLPM = res.mediumLPM;
       avgHardWPM = res.hardWPM;
       avgHardLPM = res.hardLPM;
-      avgWPM = gamesPlayed != 0 ? (avgEasyWPM*easyGamesPlayed + avgMediumWPM*mediumGamesPlayed + avgHardWPM*hardGamesPlayed) / gamesPlayed : 0;
-      avgLPM = gamesPlayed != 0 ? (avgEasyLPM *easyGamesPlayed + avgMediumLPM*mediumGamesPlayed + avgHardLPM*hardGamesPlayed) / gamesPlayed : 0;
+      avgWPM = gamesPlayed != 0 ? (avgEasyWPM*res.easyGamesWon + avgMediumWPM*res.mediumGamesWon + avgHardWPM*res.hardGamesWon) / gamesWon : 0;
+      avgLPM = gamesPlayed != 0 ? (avgEasyLPM *res.easyGamesWon + avgMediumLPM*res.mediumGamesWon + avgHardLPM*res.hardGamesWon) / gamesWon : 0;
       easyPassRate = easyGamesPlayed != 0 ? Math.round(res.easyGamesWon / easyGamesPlayed * 100) / 100 : 0;
       mediumPassRate = mediumGamesPlayed != 0 ?  Math.round(res.mediumGamesWon / mediumGamesPlayed * 100) / 100 : 0;
       hardPassRate = hardGamesPlayed != 0 ? Math.round(res.hardGamesWon / hardGamesPlayed * 100) / 100 : 0;
-      passRate = gamesPlayed != 0 ? Math.round((res.easyGamesWon + res.mediumGamesWon + res.hardGamesWon ) / gamesPlayed * 100) / 100: 0;
+      passRate = gamesPlayed != 0 ? Math.round((gamesWon ) / gamesPlayed * 100) / 100: 0;
     })
   })
 

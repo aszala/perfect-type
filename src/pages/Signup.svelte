@@ -3,6 +3,7 @@ import { createUser } from "../firebase";
 import { validateEmail } from "../utils";
 import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
+import { fade } from "svelte/transition"
 
 // svelte-ignore unused-export-let
 export let currentRoute;
@@ -55,10 +56,10 @@ function signup(e) {
 <main>
     <h1>sign up</h1>
     {#if success}
-        <h1>signed up! now just verify your email.</h1>
-        <h3>once you've done that, login <a href="/login">here</a>.</h3>
+        <h1 in:fade>signed up! now just verify your email.</h1>
+        <h3 in:fade>once you've done that, login <a href="/login">here</a>.</h3>
     {:else}
-        <form on:submit={signup}>
+        <form in:fade on:submit={signup}>
             <Input text="email" id="email" type="email" autocomplete="email" bind:value={email} />
             <br>
             <br>  
