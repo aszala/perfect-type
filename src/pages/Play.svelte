@@ -4,6 +4,7 @@
   import GameModes from "../components/GameModes.svelte"
   import randomWords from 'random-words';
   import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
+  import { onMount, afterUpdate, tick } from 'svelte'
   
   let loggedIn = isLoggedIn();
 
@@ -97,13 +98,24 @@
   function updateLetterColor(event) {
     let letterToChange = document.getElementById(promptIndexValue);
     letterToChange.classList.add("typed-letter");
-
+    
     //if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
-    if (letterToChange.offsetLeft < prevXLocation) {
+    let changeLine = letterToChange.offsetLeft < prevXLocation
+    if (changeLine) {
       letterToChange.parentElement.scrollIntoView(true);
+    } 
+
+    let nextLetter = document.getElementById(promptIndexValue+1)
+    if (nextLetter != null) {
+      let nextLetterChangeLine = nextLetter.offsetLeft < letterToChange.offsetLeft;
+      if (nextLetterChangeLine) tracker.style.backgroundColor = "rgb(0, 0, 0, 0)";
+      else tracker.style.backgroundColor = "var(--game-font-color)";
+      let letterOffsets = nextLetter.getBoundingClientRect();
+      tracker.style.left =  letterOffsets.left + "px";
+      if (nextLetter.innerHTML != "&nbsp;") tracker.style.width = letterOffsets.width + "px";
+      else if (changeLine) tracker.style.width = (letterOffsets.width + 8) + "px";
     }
 
-    
     prevLetter = letterToChange;
     prevXLocation = letterToChange.offsetLeft;
     // let gameEnvironmentDOM = document.getElementById("game-env");
@@ -142,6 +154,7 @@
     promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
     for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
     mode = mode;
+    initializeTracker();
   }
 
   // - GAME MODE VARIABLES - 
@@ -160,7 +173,22 @@
     }
     tryAgain();
   }
-  
+
+  let tracker = null;
+  async function initializeTracker() {
+    await tick();
+    tracker = document.getElementById("tracker");
+    let letterOffsets = document.getElementById(0).getBoundingClientRect();
+    tracker.style.top = (letterOffsets.bottom - 50) + "px";
+    tracker.style.left = (letterOffsets.left+.5) + "px";
+    tracker.style.width = (letterOffsets.width+.75) + "px";
+  }
+
+
+  onMount(() => {
+    initializeTracker();
+  })
+
 
 </script>
 
@@ -184,7 +212,7 @@
     font-size: 10mm;
     overflow: hidden;
     line-height: 50px;
-    transition: color 200ms;
+    transition: color 100ms;
     scroll-behavior: smooth;
   }
 
@@ -215,6 +243,28 @@
   .invisible-letter {
     color: rgb(0, 0, 0, 0);
   }
+  
+  #tracker {
+    height: 50px;
+    position: absolute;
+    left: auto;
+    transition: background-color .05s ease-in;
+    transition: left .07s ease-in-out;
+    background-color: var(--game-font-color);
+    animation: blinking .4s infinite;
+    -webkit-animation: blinking .4s infinite backwards alternate;
+  }
+  @-webkit-keyframes blinking {
+    0%   { opacity: .4; }
+    100% { opacity: .3; }
+  }
+
+  @keyframes blinking {
+    0%   { opacity: .4; }
+    100% { opacity: .3; }
+  }
+
+
 </style>
 
 
@@ -222,6 +272,7 @@
   {#if !gameOver} 
   <GameModes mode={mode} changeMode={changeMode}/>
   <!-- game components : start -->
+  <span id="tracker"></span>
     <div class="game-environment noselect" id="game-env" use:gameListener>
       {#each randomPromptWordSep as word, i}
         <div class="game-word" >
