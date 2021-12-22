@@ -6,5 +6,5 @@
 </script>
 
 <main>
-    <h1 in:fade>Logging you out</h1>
+    <h1 in:fade>logging you out</h1>
 </main>
