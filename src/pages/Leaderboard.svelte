@@ -4,6 +4,11 @@
   import LeaderboardBlock from "../components/LeaderboardBlock.svelte";
   import { getLeaderboard } from "../firebase";
   
+  // svelte-ignore unused-export-let
+  export let currentRoute;
+  // svelte-ignore unused-export-let
+  export let params;
+
   let easyLeaderboardWPM = [];
   getLeaderboard("easy_wpm").then( res => {
     res.data.forEach(item => easyLeaderboardWPM.push(JSON.parse(item)))
