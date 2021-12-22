@@ -5,6 +5,7 @@
   import randomWords from 'random-words';
   import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
   import { onMount, afterUpdate, tick } from 'svelte'
+  import { fade } from "svelte/transition"
   
   let loggedIn = isLoggedIn();
 
@@ -99,7 +100,7 @@
     let letterToChange = document.getElementById(promptIndexValue);
     letterToChange.classList.add("typed-letter");
     
-    //if (event.key == " ") fade(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
+    //if (event.key == " ") fadeLetter(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
     let changeLine = letterToChange.offsetLeft < prevXLocation
     if (changeLine) {
       letterToChange.parentElement.scrollIntoView(true);
@@ -112,7 +113,7 @@
       else tracker.style.backgroundColor = "var(--game-font-color)";
       let letterOffsets = nextLetter.getBoundingClientRect();
       tracker.style.left =  letterOffsets.left + "px";
-      if (nextLetter.innerHTML != "&nbsp;") tracker.style.width = letterOffsets.width + "px";
+      if (nextLetter.innerHTML != "&nbsp;") tracker.style.width = 19.5 + "px";
       else if (changeLine) tracker.style.width = (letterOffsets.width + 8) + "px";
     }
 
@@ -122,7 +123,7 @@
   }
   
   // fades out an html element
-  function fade(element) {
+  function fadeLetter(element) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
         if (op <= 0){
@@ -174,6 +175,8 @@
     tryAgain();
   }
 
+
+  // text tracker
   let tracker = null;
   async function initializeTracker() {
     await tick();
@@ -184,6 +187,7 @@
     tracker.style.width = (letterOffsets.width+.75) + "px";
   }
 
+  window.onresize = initializeTracker;
 
   onMount(() => {
     initializeTracker();
@@ -249,7 +253,7 @@
     position: absolute;
     left: auto;
     transition: background-color .05s ease-in;
-    transition: left .07s ease-in-out;
+    transition: left .025s ease-in-out;
     background-color: var(--game-font-color);
     animation: blinking .4s infinite;
     -webkit-animation: blinking .4s infinite backwards alternate;
@@ -264,11 +268,18 @@
     100% { opacity: .3; }
   }
 
+  .notransition {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+
 
 </style>
 
 
-<main>
+<main in:fade>
   {#if !gameOver} 
   <GameModes mode={mode} changeMode={changeMode}/>
   <!-- game components : start -->
