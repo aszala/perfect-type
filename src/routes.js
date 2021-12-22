@@ -5,7 +5,6 @@ import Profile from "./pages/Profile.svelte";
 import Leaderboard from "./pages/Leaderboard.svelte";
 import NotFound from "./pages/404.svelte";
 import Logout from "./pages/Logout.svelte";
-import ResendVerification from "./pages/ResendVerification.svelte";
 
 import { getUser, isLoggedIn } from "./firebase";
 
@@ -49,11 +48,6 @@ const routes = [
     {
         name: "404",
         component: NotFound
-    },
-    {
-        name: "resendverification",
-        component: ResendVerification,
-        onlyIf: { guard: emailUnVerified, redirect: "/" }
     }
 ];
 
