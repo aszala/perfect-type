@@ -50,23 +50,21 @@
 <main>
   <h1>profile</h1>
   {#if gamesPlayed != null}
+  <AnalyticsCard>
+    <StatisticsBlock title={userName}> <img {src} alt="Avatar" /></StatisticsBlock>
+  </AnalyticsCard>
     <AnalyticsCardCollection>
-      <AnalyticsCard>
-        <StatisticsBlock title={userName}> <img {src} alt="Avatar" /></StatisticsBlock>
-      </AnalyticsCard>
       <AnalyticsCard>
         <StatisticsBlock title="total games" overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>
       </AnalyticsCard>
-    </AnalyticsCardCollection>
-    <AnalyticsCardCollection>
+      <AnalyticsCard>
+        <StatisticsBlock title="pass rate" overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
+      </AnalyticsCard>
       <AnalyticsCard>
         <StatisticsBlock title="avg words per minute " overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} units=""/>
       </AnalyticsCard>
       <AnalyticsCard>
         <StatisticsBlock title="avg letters per minute" overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
-      </AnalyticsCard>
-      <AnalyticsCard>
-        <StatisticsBlock title="pass rate" overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
       </AnalyticsCard>
     </AnalyticsCardCollection>
   {/if}

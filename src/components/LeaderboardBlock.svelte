@@ -9,13 +9,24 @@
   .leaderboard-env {
     padding: 10px;
     border-bottom: .5mm solid black;
+    min-width: 175px;
+    /* justify-content: left; */
     display: flex;
-    align-items: center;
-    justify-content: left;
   }
 
-  .leaderboard-section { 
-    padding: 10px;
+
+  .block-item {
+    padding: 5px;
+  }
+  
+
+  .score {
+    margin-left:auto;
+    margin-right:0;
+  }
+
+  .date {
+    font-size: 1ch;
   }
 
 
@@ -24,14 +35,14 @@
 
 
 <div class="leaderboard-env">
-  <p><strong>{`${place}:`}</strong></p>
-  <div class="leaderboard-section">
+  <div class="block-item"><strong>{`${place}`}</strong></div>
+  <div class="block-item date">
+    {user}
+    <br>
     {date}
   </div>
-  <div class="leaderboard-section">
-    {user}
-  </div>
-  <div class="leaderboard-section">
+
+  <div class="block-item score">
     {score}
   </div>
 </div>

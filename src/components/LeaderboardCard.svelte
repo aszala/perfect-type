@@ -9,29 +9,29 @@
   .card {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
-    border-radius: 5px; /* 5px rounded corners */
-
     min-width: 300px;
-    padding: 10px;
+    padding: 30px;
+    border-radius: 5px; /* 5px rounded corners */
   }
 
   .card:hover {
     box-shadow: 0 3px 6px 0 rgba(0,0,0,0.2);
   }
-  .container {
+  .leaderboard-card {
     text-align: left;
-    padding: 2px 16px;
+    padding: 30px;
+    justify-content: center;
+    display:grid;
   }
 
 
 </style>
 
-
 <main>
-  <div in:fade class="card">
-    <h1>{title}</h1>
-    <div class="container">
-      <p><slot>default card</slot></p>
-    </div>
+<div in:fade class="card">
+  <h1>{title}</h1>
+  <div class="leaderboard-card">
+    <slot>default card</slot>
   </div>
+</div>
 </main>
