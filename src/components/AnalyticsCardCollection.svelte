@@ -1,3 +1,6 @@
+<script>
+  import { fade } from "svelte/transition"
+</script>
 <style>
   .analytics-card-collection {
     justify-content: center;
@@ -9,5 +12,5 @@
 </style>
 
 <main>
-  <div class="analytics-card-collection"><slot>place analytics cards here</slot></div>
+  <div in:fade class="analytics-card-collection"><slot>place analytics cards here</slot></div>
 </main>

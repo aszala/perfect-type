@@ -1,6 +1,7 @@
 <!-- must go inside of a card collection -->
 <script>
   export let title;
+  import { fade } from "svelte/transition"
 </script>
 
 <style>
@@ -27,7 +28,7 @@
 
 
 <main>
-  <div class="card">
+  <div in:fade class="card">
     <h1>{title}</h1>
     <div class="container">
       <p><slot>default card</slot></p>
