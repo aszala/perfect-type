@@ -12,10 +12,6 @@ function guard() {
     return !isLoggedIn();
 }
 
-function emailUnVerified() {
-    return !getUser().emailVerified;
-}
-
 const routes = [
     {
         name: "/",
