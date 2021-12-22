@@ -5,7 +5,8 @@
   .analytics-card-collection {
     justify-content: center;
     display:inline-flex;
-    padding: 15px;
+    flex-wrap:wrap;
+    padding: 5px;
     align-items: center;
     justify-content: center;
   }

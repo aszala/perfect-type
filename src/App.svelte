@@ -29,7 +29,6 @@ initFirebase();
 		font-family: 'Times New Roman', Times, serif;
 		padding: 0px;
 		background-color: var(--main-bg-color);
-		overflow: hidden;
 		color: var(--font-color);
 	}
 
