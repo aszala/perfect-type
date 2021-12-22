@@ -86,8 +86,8 @@ export async function createUser(email, password) {
     }
 }
 
-export function sendVerifcationEmailAsync() {
-    sendEmailVerification(getUser());
+export function sendVerifcationEmailAsync(user) {
+    sendEmailVerification(user);
 }
 
 export async function signUserIn(email, password) {
@@ -95,8 +95,8 @@ export async function signUserIn(email, password) {
         const userCreds = await signInWithEmailAndPassword(auth, email, password);
 
         if (!userCreds.user.emailVerified) {
-            return { message: `Please verify your email! Click
-                <a href="/resendverification">here</a> to send another link.`, success: false };
+            return { data: userCreds.user, message: `Please verify your email! Click
+                <a id="send-email-again" href="">here</a> to send another link.`, success: false };
         }
 
         sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));

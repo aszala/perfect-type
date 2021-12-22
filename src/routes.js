@@ -5,11 +5,16 @@ import Profile from "./pages/Profile.svelte";
 import Leaderboard from "./pages/Leaderboard.svelte";
 import NotFound from "./pages/404.svelte";
 import Logout from "./pages/Logout.svelte";
+import ResendVerification from "./pages/ResendVerification.svelte";
 
-import { isLoggedIn } from "./firebase"
+import { getUser, isLoggedIn } from "./firebase";
 
 function guard() {
     return !isLoggedIn();
+}
+
+function emailUnVerified() {
+    return !getUser().emailVerified;
 }
 
 const routes = [
@@ -44,6 +49,11 @@ const routes = [
     {
         name: "404",
         component: NotFound
+    },
+    {
+        name: "resendverification",
+        component: ResendVerification,
+        onlyIf: { guard: emailUnVerified, redirect: "/" }
     }
 ];
 

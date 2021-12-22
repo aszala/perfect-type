@@ -13,25 +13,37 @@ let success = false;
 let email, password;
 let error_message = "";
 
+let resendError = false;
+let userData;
+
 function login(e) {
     if (e) {
         e.preventDefault();
     }
 
     signUserIn(email, password).then((user) => {
+        resendError = false;
+        
         if (user.success) {
             error_message = "";
             success = true;
             redirectHome(1000);
         } else {
-            error_message = user.message;
+            userData = user.data;
+
+            if (user.data) {
+                error_message = "";
+                resendError = true;
+            } else {
+                error_message = user.message;
+            }
         }
     });
 }
 
-// Keep this function, it says unused, but it is
-function resendVerificationEmail() {
-    sendVerifcationEmailAsync(getUser());
+function resend() {
+    sendVerifcationEmailAsync(userData);
+    resendError = false;
 }
 
 </script>
@@ -59,6 +71,10 @@ function resendVerificationEmail() {
             <br>
             <PerfectButton text="login"/>
         </form>
-        <p id="error-indicator">{@html error_message}</p>
+        {#if resendError}
+            <p id="error-indicator">Please verify your email! Click <a on:click={resend} href="">here</a> to send another link.</p>
+        {:else}
+            <p id="error-indicator">{@html error_message}</p>
+        {/if}
     {/if}
 </main>
