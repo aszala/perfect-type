@@ -1,5 +1,5 @@
 <script>
-import { signUserIn } from "../firebase";
+import { signUserIn, sendVerifcationEmailAsync, getUser } from "../firebase";
 import { redirectHome } from "../utils";
 import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
@@ -10,8 +10,8 @@ export let currentRoute;
 export let params;
 
 let success = false;
-
 let email, password;
+let error_message = "";
 
 function login(e) {
     if (e) {
@@ -19,14 +19,29 @@ function login(e) {
     }
 
     signUserIn(email, password).then((user) => {
-        if (user != null) {
+        if (user.success) {
+            error_message = "";
             success = true;
             redirectHome(1000);
+        } else {
+            error_message = user.message;
         }
     });
 }
 
+// Keep this function, it says unused, but it is
+function resendVerificationEmail() {
+    sendVerifcationEmailAsync(getUser());
+}
+
 </script>
+
+<style>
+    #error-indicator {
+        color: red;
+        font-size: 1.2em;
+    }
+</style>
 
 <main>
     <h1>login</h1>
@@ -42,7 +57,8 @@ function login(e) {
             </div>
             <br>
             <br>
-            <PerfectButton text="login"/>     
+            <PerfectButton text="login"/>
         </form>
+        <p id="error-indicator">{@html error_message}</p>
     {/if}
 </main>
