@@ -21,7 +21,7 @@ a {
 }
 
 a:hover {
-  color: black;
+  color: var(--main-accent-color);
   text-decoration: none;
 }
 

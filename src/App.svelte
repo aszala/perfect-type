@@ -19,8 +19,10 @@ initFirebase();
 <style>
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
-		--main-accent-color: rgb(58, 34, 3);
-		--font-color: rgb(51, 51, 51);
+		--main-accent-color: rgb(0, 0, 0, .85);
+		--game-font-color: rgb(100, 100, 100, .85);
+		--font-color: rgb(51, 51, 51, .85);
+
 	}
 
 	:global(body) {
@@ -72,10 +74,10 @@ initFirebase();
 
 	:global(button) {
 		background-color: transparent;
-		border: 2px solid #472100;
+		border: 2px solid  var(--main-accent-color);
 		display: inline-block;
 		cursor: pointer;
-		color: gray;
+		color: var(--font-color);
 		font-size: 1.2em;
 		padding: 16px 32px;
 		text-decoration: none;

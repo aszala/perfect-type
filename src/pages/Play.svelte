@@ -167,7 +167,7 @@
 <style>
 
   :global(.typed-letter) {
-    color: rgba(75, 75, 75, 0.25);
+    color: var(--main-accent-color);
     /* border-bottom: solid var(--main-accent-color) 1px; */
   }
 
@@ -203,7 +203,7 @@
 
   .game-word {
     display:inline-block;
-    color: #272727;
+    color: var(--game-font-color);
   }
  
   .game-letter {
