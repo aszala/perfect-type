@@ -95,8 +95,7 @@ export async function signUserIn(email, password) {
         const userCreds = await signInWithEmailAndPassword(auth, email, password);
 
         if (!userCreds.user.emailVerified) {
-            return { data: userCreds.user, message: `Please verify your email! Click
-                <a id="send-email-again" href="">here</a> to send another link.`, success: false };
+            return { data: userCreds.user, success: false };
         }
 
         sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
