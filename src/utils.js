@@ -22,7 +22,7 @@ export const emptyUser = {
     'uid': ""
 }
 
-export function inputType(e, handler) {
+export function inputType(e) {
     let label = e.target.parentNode.querySelector('label');
 
     if (e.target.value.length > 0) {
@@ -32,4 +32,8 @@ export function inputType(e, handler) {
         label.style.top = "10px";
         label.style.fontSize = "1.5em";
     }
+}
+
+export function cleanErrorMessage(message) {
+    return message.split("/")[1].slice(0, -2)
 }

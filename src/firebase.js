@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, deleteUser } from "firebase/auth";
-import { emptyUser, redirectHome } from "./utils";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
+import { emptyUser, redirectHome, cleanErrorMessage } from "./utils";
 
 let app;
 let analytics;
@@ -14,7 +14,8 @@ const sessionStorage = window.sessionStorage;
 const USER_STORAGE_ID = "user";
 const USER_COLLECTION = "users";
 const LEADERBOARD_COLLECTION = "leaderboard";
-const USERINFO_COLLECTION = "userinfo"
+const USERINFO_COLLECTION = "userinfo";
+
 const defaultUserInfoObject = {
     easyGamesFailed: 0,
     easyGamesWon: 0,
@@ -28,7 +29,7 @@ const defaultUserInfoObject = {
     mediumGamesWon: 0,
     mediumLPM: 0,
     mediumWPM: 0,
-}
+};
 
 export function initFirebase() {
     const firebaseConfig = {
@@ -69,8 +70,9 @@ export function isLoggedIn() {
 export async function createUser(email, password) {
     try {
 	    const userCreds = await createUserWithEmailAndPassword(auth, email, password);
-        sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
-
+        await sendEmailVerification(userCreds.user);
+        await signOut(auth);
+        
         let userData = Object.assign({}, emptyUser);
         userData.uid = userCreds.user.uid;
         userData.email = userCreds.user.email;
@@ -78,21 +80,30 @@ export async function createUser(email, password) {
         await createDocument(USER_COLLECTION, userData.uid, userData);
         await createDocument(USERINFO_COLLECTION, userData.uid, defaultUserInfoObject)
         
-        return userCreds.user;
+        return { success: true };
     } catch(e) {
-        console.log(e);
-        return null;
+        return { message: cleanErrorMessage(e.message), success: false };
     }
+}
+
+export function sendVerifcationEmailAsync() {
+    sendEmailVerification(getUser());
 }
 
 export async function signUserIn(email, password) {
     try {
         const userCreds = await signInWithEmailAndPassword(auth, email, password);
+
+        if (!userCreds.user.emailVerified) {
+            return { message: `Please verify your email! Click
+                <a href="/resendverification">here</a> to send another link.`, success: false };
+        }
+
         sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
 
-        return userCreds.user;
+        return { success: true };
     } catch(e) {
-        return null
+        return { message: cleanErrorMessage(e.message), success: false };
     }
 }
 
@@ -105,8 +116,9 @@ export async function createDocument(collection, docID, data) {
 
 export async function logoutUser() {
     try {
-        await signOut();
+        await signOut(auth);
     } catch (e) {
+        console.log(e)
     }
 
     sessionStorage.setItem(USER_STORAGE_ID, "");
