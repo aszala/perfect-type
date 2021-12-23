@@ -1,10 +1,10 @@
 <script>
   import { promptIndex, wordsToDisplay } from '../stores.js';
+  import { generateRandomString, initializeTracker} from '../utils.js';
   import GameOverDisplay from "../components/GameOverDisplay.svelte"
   import GameModes from "../components/GameModes.svelte"
-  import randomWords from 'random-words';
   import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
-  import { onMount, tick } from 'svelte'
+  import { onMount } from 'svelte'
   import { fade } from "svelte/transition"
   
   let loggedIn = isLoggedIn();
@@ -14,36 +14,49 @@
   // svelte-ignore unused-export-let
   export let params;
 
-  //  - PROMPT PROCESSING -
-  Array.prototype.random = function() {
-    return this[Math.floor((Math.random()*this.length))];
+  // - GAME MODE VARIABLES - 
+  let mode = "easy";
+  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
+  wordsToDisplay.update(() => gameModeWordAmount[mode]);
+  function changeMode(e) {
+    let currentModeDiv = document.getElementById(mode);
+    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
+    let newModeDiv = document.getElementById(e.target.innerHTML);
+    newModeDiv.className += ' active-mode';
+    mode = e.target.innerHTML
+    wordsToDisplay.update(() => gameModeWordAmount[mode]);
+    for (let i = 0; i < promptIndexValue; i++) {
+      let letterToChange = document.getElementById(i);
+      letterToChange.classList.remove("typed-letter");
+    }
+    tryAgain();
   }
 
+  // - DISPLAY VARIABLES -
+  let promptIndexValue;
   let randomPrompt = generateRandomString();
   let randomPromptWordSep = randomPrompt.split(" ");
   let promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
+  // - GAME VARIABLES  - 
+  let gameOver = false;
+  let winGame = false;
+  let startTime = 0;
+  let prevXLocation = 0;
+  let prevLetter = 0;
+  let wpm = 0;
+
+  // update display variables
   for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
-  let promptIndexValue;
   promptIndex.subscribe(value => {
     promptIndexValue = value;
   });
-
-  function generateRandomString() {
-    let promptLength = 5;
-    wordsToDisplay.subscribe(value => {
-      promptLength = value;
-    })
-    return randomWords(promptLength).join(" ");
-  }
 
   function gameListener() {
     const handleClick = (event) => {
       event.preventDefault();
       if (!gameOver) {
-        
         // initialize wpm calculation
         if (startTime == 0) startTime = new Date();
-
         // losing game
         if (randomPrompt.charAt(promptIndexValue) !== event.key) {
           gameOver = true; 
@@ -57,11 +70,11 @@
             })
           }
         } else {
-          // updates letter if typed ccorrectly
+          // updates letter if typed correctly
           updateLetterColor(event)
           promptIndex.update(n => n + 1);
         }
-        // winning game - all letters are typed correctly
+        // winning game
         if (promptIndexValue == randomPrompt.length) {
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
@@ -84,7 +97,6 @@
             let leaderboardType = mode + "_wpm"
             updateToLeaderboard(getUser(), leaderboardType, wpm);
           }
-
         }
       }
     };
@@ -99,13 +111,8 @@
   function updateLetterColor(event) {
     let letterToChange = document.getElementById(promptIndexValue);
     letterToChange.classList.add("typed-letter");
-    
-    //if (event.key == " ") fadeLetter(prevLetter.parentElement); // change this to a css "fade" class and append it to the original class
     let changeLine = letterToChange.offsetLeft < prevXLocation
-    if (changeLine) {
-      letterToChange.parentElement.scrollIntoView(true);
-    } 
-
+    if (changeLine) letterToChange.parentElement.scrollIntoView(true);
     let nextLetter = document.getElementById(promptIndexValue+1)
     if (nextLetter != null) {
       let nextLetterChangeLine = nextLetter.offsetLeft < letterToChange.offsetLeft;
@@ -116,19 +123,9 @@
       if (nextLetter.innerHTML != "&nbsp;") tracker.style.width = 19.5 + "px";
       else if (changeLine) tracker.style.width = (letterOffsets.width + 8) + "px";
     }
-
     prevLetter = letterToChange;
     prevXLocation = letterToChange.offsetLeft;
-    // let gameEnvironmentDOM = document.getElementById("game-env");
   }
-  
-  // - GAME VARIABLES  - 
-  let gameOver = false;
-  let winGame = false;
-  let startTime = 0;
-  let prevXLocation = 0;
-  let prevLetter = 0;
-  let wpm = 0;
 
   function tryAgain() {
     startTime = 0;
@@ -145,42 +142,11 @@
     initializeTracker();
   }
 
-  // - GAME MODE VARIABLES - 
-  let mode = "easy";
-  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
-  function changeMode(e) {
-    let currentModeDiv = document.getElementById(mode);
-    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
-    let newModeDiv = document.getElementById(e.target.innerHTML);
-    newModeDiv.className += ' active-mode';
-    mode = e.target.innerHTML
-    wordsToDisplay.update(() => gameModeWordAmount[mode]);
-    for (let i = 0; i < promptIndexValue; i++) {
-      let letterToChange = document.getElementById(i);
-      letterToChange.classList.remove("typed-letter");
-    }
-    tryAgain();
-  }
-
-
-  // text tracker
-  let tracker = null;
-  async function initializeTracker() {
-    await tick();
-    tracker = document.getElementById("tracker");
-    let letterOffsets = document.getElementById(0).getBoundingClientRect();
-    tracker.style.top = (letterOffsets.bottom - 50) + "px";
-    tracker.style.left = (letterOffsets.left+.5) + "px";
-    tracker.style.width = (letterOffsets.width+.75) + "px";
-  }
-
+  
   window.onresize = initializeTracker;
-
   onMount(() => {
     initializeTracker();
   })
-
-
 </script>
 
 <style>

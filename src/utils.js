@@ -1,3 +1,7 @@
+import { wordsToDisplay } from './stores.js'
+import { tick } from 'svelte';
+import randomWords from 'random-words'
+
 export function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -36,4 +40,23 @@ export function inputType(e) {
 
 export function cleanErrorMessage(message) {
     return message.split("/")[1].slice(0, -2)
+}
+
+export function generateRandomString() {
+    let promptLength = 5;
+    wordsToDisplay.subscribe(value => {
+      promptLength = value;
+    })
+    return randomWords(promptLength).join(" ");
+  }
+
+
+export let tracker = null;
+export async function initializeTracker() {
+    await tick();
+    tracker = document.getElementById("tracker");
+    let letterOffsets = document.getElementById(0).getBoundingClientRect();
+    tracker.style.top = (letterOffsets.bottom - 50) + "px";
+    tracker.style.left = (letterOffsets.left+.5) + "px";
+    tracker.style.width = (letterOffsets.width+.75) + "px";
 }
