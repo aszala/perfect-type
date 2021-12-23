@@ -51,11 +51,6 @@ function signup(e) {
         color: red;
         font-size: 1.2em;
     }
-
-    a {
-        text-decoration: underline;
-    }
-
 </style>
 
 <main>
