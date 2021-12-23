@@ -47,47 +47,6 @@ initFirebase();
 		margin: auto;
 	}
 
-	:global(.input-container) {
-		position: relative;
-	}
-
-	:global(input) {
-		width: 300px;
-		background: transparent;
-		border: none;
-		border-bottom: solid var(--main-accent-color) 2px;
-		outline: none;
-		font-size: 1.5em;
-		text-align: center;
-	}
-
-	:global(label) {
-		font-size: 1.5em;
-		text-align: center;
-		position: absolute;
-		top: 10px;
-		width: 100%;
-		text-align: center;
-		transition: font-size 100ms, top 100ms;
-	}
-
-	:global(button) {
-		background-color: transparent;
-		border: 2px solid  var(--main-accent-color);
-		display: inline-block;
-		cursor: pointer;
-		color: var(--font-color);
-		font-size: 1.2em;
-		padding: 16px 32px;
-		text-decoration: none;
-		transition: color 200ms, background-color 200ms;
-	}
-
-	:global(button:hover) {
-		background-color: var(--main-accent-color);
-		color: var(--main-bg-color);
-	}
-
 	:global(a) {
 		color: var(--font-color) !important;
 		text-align: center;
