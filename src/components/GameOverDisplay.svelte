@@ -16,20 +16,18 @@
     width: auto;
     height: 500px;
     overflow: scroll;
-    font-size: 10mm;
+    font-size: 2em;
     overflow: hidden;
   }
 
   .game-over-div {
-    /* todo  */
 		padding: 20px;
-		font-size: 15mm;
   }
 
 </style>
 
 <div class="game-over-environment">
-	<div class="game-over-div">{winGame ? `you typed ${wpm} words per minute` : "you lost :("}</div>
+	<div class="game-over-div">{winGame ? `you won :) and typed ${wpm} words per minute` : "you lost :("}</div>
   <br><br>
 	<PerfectButton onClickFn={tryAgain} text={winGame ? "play again" : "try again"}/>
 </div>
