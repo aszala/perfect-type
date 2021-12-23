@@ -4,6 +4,11 @@
   import { getUser, getUserProfile } from "../firebase";
   import { onMount } from "svelte";
 
+  // svelte-ignore unused-export-let
+  export let currentRoute;
+  // svelte-ignore unused-export-let
+  export let params;
+
   let gamesPlayed, easyGamesPlayed, mediumGamesPlayed, hardGamesPlayed;
   let userName = getUser().email.substr(0, getUser().email.indexOf("@"))
   let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM;
