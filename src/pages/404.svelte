@@ -2,6 +2,10 @@
 import PerfectButton from "../components/PerfectButton.svelte";
 import { redirectHome } from "../utils";
 
+// svelte-ignore unused-export-let
+export let currentRoute;
+// svelte-ignore unused-export-let
+export let params;
 </script>
 
 <main>

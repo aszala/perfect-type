@@ -3,6 +3,11 @@
     import { fade } from "svelte/transition"
 
     logoutUser();
+
+    // svelte-ignore unused-export-let
+    export let currentRoute;
+    // svelte-ignore unused-export-let
+export let params;
 </script>
 
 <main>
