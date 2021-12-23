@@ -5,7 +5,6 @@
     max-width: 1500px;
     display: flex;
     flex-wrap:wrap;
-    border: 1mm solid red;
     margin: 0 auto;
   }
 </style>
