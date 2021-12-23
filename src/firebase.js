@@ -3,6 +3,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
 import { emptyUser, redirectHome, cleanErrorMessage } from "./utils";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 let app;
 let analytics;
@@ -47,6 +48,11 @@ export function initFirebase() {
     analytics = getAnalytics(app);
     auth = getAuth();
     db = getFirestore();
+
+    const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider("6LfUF8EdAAAAAIsY52KJ4t-SzYybu1gZRYNk-Zce"),
+        isTokenAutoRefreshEnabled: true
+    });
 }
 
 export function getUser() {
@@ -96,7 +102,7 @@ export async function signUserIn(email, password) {
 
         if (!userCreds.user.emailVerified) {    
             await signOut(auth);
-            
+
             return { data: userCreds.user, success: false };
         }
 
