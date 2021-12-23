@@ -296,7 +296,7 @@
     <div id="occlusion"></div>
     <!-- game components : end -->
   {:else}
-    <GameOverDisplay winGame={winGame} wpm={wpm} tryAgain={tryAgain}/>
+    <GameOverDisplay {winGame} {wpm} {tryAgain}/>
   {/if}
 
 </main>
