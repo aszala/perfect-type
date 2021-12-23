@@ -52,17 +52,17 @@ function signup(e) {
         font-size: 1.2em;
     }
 
-    span {
+    a {
         text-decoration: underline;
-        cursor: pointer;
     }
+
 </style>
 
 <main>
     <h1>sign up</h1>
     {#if success}
         <h1 in:fade>signed up! now just verify your email.</h1>
-        <h3 in:fade>once you've done that, login <span href="/login">here</span>.</h3>
+        <h3 in:fade>once you've done that, login <a href="/login">here</a>.</h3>
     {:else}
         <form in:fade on:submit={signup}>
             <Input text="email" id="email" type="email" autocomplete="email" bind:value={email} />
