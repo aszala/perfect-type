@@ -122,19 +122,6 @@
     // let gameEnvironmentDOM = document.getElementById("game-env");
   }
   
-  // fades out an html element
-  function fadeLetter(element) {
-    var op = 1;  // initial opacity
-    var timer = setInterval(function () {
-        if (op <= 0){
-            clearInterval(timer);
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op -= (op * 0.2 + .05);
-    }, 100);
-}
-
   // - GAME VARIABLES  - 
   let gameOver = false;
   let winGame = false;
