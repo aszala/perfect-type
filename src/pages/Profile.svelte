@@ -54,6 +54,7 @@
     padding: 5px;
     align-items: center;
     justify-content: center;
+    gap: 20px;
   }
 </style>
 
@@ -65,7 +66,7 @@
         <img {src} alt="Avatar" />
       </StatisticsBlock>
     </Card>
-
+    <br>
     <div class="card-collection">
       <Card title="total games">
         <StatisticsBlock overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>

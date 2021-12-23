@@ -13,7 +13,9 @@
     text-align: center;
     vertical-align: middle;
     user-select: none;
-    /* border: 1mm solid black; */
+    font-size: 1.3em;
+    position: relative;
+    top: 50px;
   }
   .mode-div {
     float:left;

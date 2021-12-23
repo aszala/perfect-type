@@ -6,15 +6,27 @@ import { initFirebase } from "./firebase"
 
 initFirebase();
 
+function shouldShowCreator() {
+	console.log("adkalw");
+	return !window.location.href.includes("creators");
+}
+
 </script>
 
 <svelte:head>
 	<title>Perfect Type</title>
 	<meta charset="utf-8">
+	<meta name="description" content="Test your typing skills with perfect type. How much and how fast can you type without errors">
+	<meta name="keywords" content="typer,type,perfect,perfect type,perfect-type">
+	<link rel="canonical" href="https://perfect-type.com/" />
+	<meta name="robots" content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="google" content="nositelinkssearchbox" />
 </svelte:head>
 
 <Header />
 <Router {routes} />
+<a id="see-devs" href="/creators">see the site devs</a>
 
 <style>
 	:global(:root) {
@@ -22,7 +34,6 @@ initFirebase();
 		--main-accent-color: rgb(0, 0, 0, .85);
 		--game-font-color: rgb(100, 100, 100, .85);
 		--font-color: rgb(51, 51, 51, .85);
-
 	}
 
 	:global(body) {
@@ -30,12 +41,13 @@ initFirebase();
 		padding: 0px;
 		background-color: var(--main-bg-color);
 		color: var(--font-color);
+		width: 100%;
+		height: 100%;
 	}
 
 	:global(main) {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
 		margin: 0 auto;
 	}
 
@@ -47,50 +59,23 @@ initFirebase();
 		margin: auto;
 	}
 
-	:global(.input-container) {
-		position: relative;
+	:global(a) {
+		color: var(--font-color) !important;
+		text-align: center;
+		transition: color 200ms;
+		display: block;
+		text-decoration: underline;
 	}
 
-	:global(input) {
-		width: 300px;
-		background: transparent;
-		border: none;
-		border-bottom: solid var(--main-accent-color) 2px;
-		outline: none;
-		font-size: 1.5em;
-		text-align: center;
+	:global(a:hover) {
+		color: var(--main-accent-color) !important;
 	}
-
-	:global(label) {
-		font-size: 1.5em;
-		text-align: center;
+	
+	#see-devs {
 		position: absolute;
-		top: 10px;
-		width: 100%;
-		text-align: center;
-		transition: font-size 100ms, top 100ms;
-	}
-
-	:global(button) {
-		background-color: transparent;
-		border: 2px solid  var(--main-accent-color);
-		display: inline-block;
-		cursor: pointer;
-		color: var(--font-color);
-		font-size: 1.2em;
-		padding: 16px 32px;
-		text-decoration: none;
-		transition: color 200ms, background-color 200ms;
-	}
-
-	:global(button:hover) {
-		background-color: var(--main-accent-color);
-		color: var(--main-bg-color);
-	}
-
-	@media (min-width: 640px) {
-		:global(main) {
-			max-width: none;
-		}
+		bottom: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: .2em;
 	}
 </style>
