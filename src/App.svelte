@@ -22,7 +22,6 @@ initFirebase();
 		--main-accent-color: rgb(0, 0, 0, .85);
 		--game-font-color: rgb(100, 100, 100, .85);
 		--font-color: rgb(51, 51, 51, .85);
-
 	}
 
 	:global(body) {
