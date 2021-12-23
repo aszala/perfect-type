@@ -21,11 +21,11 @@ let loggedIn = isLoggedIn();
   display: flex;
   align-items: center;
   justify-content: right;
+  gap: 15px;
 }
 
 a {
   text-decoration: none;
-  padding-left: 15px;
   font-weight: 600;
 	font-size: 1.3em;
 }
