@@ -7,5 +7,5 @@ import { redirectHome } from "../utils";
 <main>
 
     <h2>oops, looks like that page doesn't exist</h2>
-    <PerfectButton text="return home" onClickFn=redirectHome />
+    <PerfectButton text="return home" onClickFn={redirectHome} />
 </main>
