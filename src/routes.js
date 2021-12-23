@@ -6,7 +6,7 @@ import Leaderboard from "./pages/Leaderboard.svelte";
 import NotFound from "./pages/404.svelte";
 import Logout from "./pages/Logout.svelte";
 
-import { getUser, isLoggedIn } from "./firebase";
+import { isLoggedIn } from "./firebase";
 
 function guard() {
     return !isLoggedIn();
