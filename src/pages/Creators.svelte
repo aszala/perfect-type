@@ -11,7 +11,7 @@
     .card-collection {
         display: flex;
         position: relative;
-        top: 200px;
+        top: 100px;
         margin: auto;
         width: 80%;
         max-width: 1000px;

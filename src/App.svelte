@@ -6,6 +6,11 @@ import { initFirebase } from "./firebase"
 
 initFirebase();
 
+function shouldShowCreator() {
+	console.log("adkalw");
+	return !window.location.href.includes("creators");
+}
+
 </script>
 
 <svelte:head>
@@ -15,6 +20,7 @@ initFirebase();
 
 <Header />
 <Router {routes} />
+<a id="see-devs" href="/creators">see the site devs</a>
 
 <style>
 	:global(:root) {
@@ -58,10 +64,12 @@ initFirebase();
 	:global(a:hover) {
 		color: var(--main-accent-color) !important;
 	}
-
-	@media (min-width: 640px) {
-		:global(main) {
-			max-width: none;
-		}
+	
+	#see-devs {
+		position: absolute;
+		bottom: 50px;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 1.3em;
 	}
 </style>
