@@ -14,6 +14,24 @@
   // svelte-ignore unused-export-let
   export let params;
 
+  // - GAME MODE VARIABLES - 
+  let mode = "easy";
+  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
+  wordsToDisplay.update(() => gameModeWordAmount[mode]);
+  function changeMode(e) {
+    let currentModeDiv = document.getElementById(mode);
+    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
+    let newModeDiv = document.getElementById(e.target.innerHTML);
+    newModeDiv.className += ' active-mode';
+    mode = e.target.innerHTML
+    wordsToDisplay.update(() => gameModeWordAmount[mode]);
+    for (let i = 0; i < promptIndexValue; i++) {
+      let letterToChange = document.getElementById(i);
+      letterToChange.classList.remove("typed-letter");
+    }
+    tryAgain();
+  }
+
   // - DISPLAY VARIABLES -
   let promptIndexValue;
   let randomPrompt = generateRandomString();
@@ -124,22 +142,6 @@
     initializeTracker();
   }
 
-  // - GAME MODE VARIABLES - 
-  let mode = "easy";
-  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
-  function changeMode(e) {
-    let currentModeDiv = document.getElementById(mode);
-    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
-    let newModeDiv = document.getElementById(e.target.innerHTML);
-    newModeDiv.className += ' active-mode';
-    mode = e.target.innerHTML
-    wordsToDisplay.update(() => gameModeWordAmount[mode]);
-    for (let i = 0; i < promptIndexValue; i++) {
-      let letterToChange = document.getElementById(i);
-      letterToChange.classList.remove("typed-letter");
-    }
-    tryAgain();
-  }
   
   window.onresize = initializeTracker;
   onMount(() => {
