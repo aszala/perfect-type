@@ -30,12 +30,13 @@ initFirebase();
 		padding: 0px;
 		background-color: var(--main-bg-color);
 		color: var(--font-color);
+		width: 100%;
+		height: 100%;
 	}
 
 	:global(main) {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
 		margin: 0 auto;
 	}
 
