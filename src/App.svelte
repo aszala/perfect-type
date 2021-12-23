@@ -73,9 +73,9 @@ function shouldShowCreator() {
 	
 	#see-devs {
 		position: absolute;
-		bottom: 50px;
+		bottom: 10px;
 		left: 50%;
 		transform: translateX(-50%);
-		font-size: 1.3em;
+		font-size: .2em;
 	}
 </style>
