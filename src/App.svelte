@@ -16,6 +16,12 @@ function shouldShowCreator() {
 <svelte:head>
 	<title>Perfect Type</title>
 	<meta charset="utf-8">
+	<meta name="description" content="Test your typing skills with perfect type. How much and how fast can you type without errors">
+	<meta name="keywords" content="typer,type,perfect,perfect type,perfect-type">
+	<link rel="canonical" href="https://perfect-type.com/" />
+	<meta name="robots" content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="google" content="nositelinkssearchbox" />
 </svelte:head>
 
 <Header />
