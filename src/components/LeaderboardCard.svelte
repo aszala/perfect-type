@@ -9,6 +9,7 @@
   .card {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
+    max-width: 600px;
     min-width: 300px;
     padding: 30px;
     border-radius: 5px; /* 5px rounded corners */
@@ -20,8 +21,7 @@
   .leaderboard-card {
     text-align: left;
     padding: 30px;
-    justify-content: center;
-    display:grid;
+    display: inline-block;
   }
 
 
