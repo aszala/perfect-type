@@ -9,35 +9,45 @@ let loggedIn = isLoggedIn();
 .header {
   background-color: rgb(0, 0, 0, 0);
   overflow: hidden;
+  padding: 20px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+#links {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 15px;
 }
 
 a {
-  float: right;
-  color: var(--font-color);
-  text-align: center;
-  padding: 15px;
-  font-size: 1.3em;
-  transition: color 200ms;
+  text-decoration: none;
+  font-weight: 600;
+	font-size: 1.3em;
 }
 
-a:hover {
-  color: var(--main-accent-color);
-  text-decoration: none;
+#title {
+  font-size: 3em;
+  font-weight: bold;
 }
 
 </style>
 
-<main>
-  <div class="header">
-    {#if loggedIn}
-      <a href="/logout">logout</a>
-      <a href="/profile">profile</a>
-    {:else}
-      <a href="/signup">signup</a>
-      <a href="/login">login</a>
-    {/if}
-    <a href="/leaderboard">leaderboard</a>
+<div class="header">
+  <a id="title" href="/">perfect type</a>
+  <div id="links">
     <a href="/">play</a>
+    <a href="/leaderboard">leaderboard</a>
+    {#if loggedIn}
+      <a href="/profile">profile</a>
+      <a href="/logout">logout</a>
+    {:else}
+      <a href="/login">login</a>
+      <a href="/signup">signup</a>
+    {/if}
   </div>
-
-</main>
+</div>
