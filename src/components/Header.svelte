@@ -27,6 +27,7 @@ a {
   text-decoration: none;
   padding-left: 15px;
   font-weight: 600;
+	font-size: 1.3em;
 }
 
 #title {

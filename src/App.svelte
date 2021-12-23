@@ -50,7 +50,6 @@ initFirebase();
 	:global(a) {
 		color: var(--font-color) !important;
 		text-align: center;
-		font-size: 1.3em;
 		transition: color 200ms;
 		display: block;
 		text-decoration: underline;
