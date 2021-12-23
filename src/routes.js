@@ -19,6 +19,11 @@ const routes = [
         component: Play
     },
     {
+        name: "index",
+        component: Play,
+        onlyIf: { guard: () => { return false; }, redirect: "/" }
+    },
+    {
         name: "login",
         component: Login,
         onlyIf: { guard: guard, redirect: "/" }
