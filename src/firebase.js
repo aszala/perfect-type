@@ -94,7 +94,9 @@ export async function signUserIn(email, password) {
     try {
         const userCreds = await signInWithEmailAndPassword(auth, email, password);
 
-        if (!userCreds.user.emailVerified) {
+        if (!userCreds.user.emailVerified) {    
+            await signOut(auth);
+            
             return { data: userCreds.user, success: false };
         }
 
