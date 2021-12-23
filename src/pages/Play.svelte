@@ -4,7 +4,7 @@
   import GameModes from "../components/GameModes.svelte"
   import randomWords from 'random-words';
   import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
-  import { onMount, afterUpdate, tick } from 'svelte'
+  import { onMount, tick } from 'svelte'
   import { fade } from "svelte/transition"
   
   let loggedIn = isLoggedIn();
