@@ -54,6 +54,11 @@ function resend() {
         color: red;
         font-size: 1.2em;
     }
+
+    #error-indicator>span {
+        text-decoration: underline;
+        cursor: pointer;
+    }
 </style>
 
 <main>
@@ -73,7 +78,9 @@ function resend() {
             <PerfectButton text="login"/>
         </form>
         {#if resendError}
-            <p in:fade id="error-indicator">please verify your email! click <a on:click={resend} href="">here</a> to send another link.</p>
+            <p in:fade id="error-indicator">
+                please verify your email! click <span on:click={resend}>here</span> to send another link.
+            </p>
         {:else}
             <p in:fade id="error-indicator">{@html error_message}</p>
         {/if}

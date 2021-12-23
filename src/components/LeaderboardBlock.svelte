@@ -10,23 +10,20 @@
     padding: 10px;
     border-bottom: .5mm solid black;
     min-width: 175px;
-    /* justify-content: left; */
     display: flex;
   }
-
 
   .block-item {
     padding: 5px;
   }
   
-
   .score {
     margin-left:auto;
     margin-right:0;
   }
 
   .date {
-    font-size: 1ch;
+    font-size: 1em;
   }
 
 

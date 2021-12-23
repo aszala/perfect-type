@@ -1,20 +1,23 @@
 <script>
-  import AnalyticsCard from "../components/AnalyticsCard.svelte";
-  import AnalyticsCardCollection from "../components/AnalyticsCardCollection.svelte";
-  import StatisticsBlock from "../components/StatisticsBlock.svelte"
+  import Card from "../components/Card.svelte";
+  import StatisticsBlock from "../components/StatisticsBlock.svelte";
   import { getUser, getUserProfile } from "../firebase";
-  import { onMount } from "svelte"
+  import { onMount } from "svelte";
+
+  // svelte-ignore unused-export-let
+  export let currentRoute;
+  // svelte-ignore unused-export-let
+  export let params;
 
   let gamesPlayed, easyGamesPlayed, mediumGamesPlayed, hardGamesPlayed;
   let userName = getUser().email.substr(0, getUser().email.indexOf("@"))
   let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM;
   let avgLPM, avgEasyLPM, avgMediumLPM, avgHardLPM;
   let passRate, easyPassRate, mediumPassRate, hardPassRate;
-  let src = '../../fart.png';
-
+  let src = ' /default_avatar.png';
 
   onMount(() => {
-    getUserProfile(getUser().uid).then( res => {
+    getUserProfile(getUser().uid).then(res => {
       easyGamesPlayed = res.easyGamesFailed + res.easyGamesWon;
       mediumGamesPlayed = res.mediumGamesFailed + res.mediumGamesWon;
       hardGamesPlayed = res.hardGamesFailed + res.hardGamesWon;
@@ -32,9 +35,8 @@
       mediumPassRate = mediumGamesPlayed != 0 ?  Math.round(res.mediumGamesWon / mediumGamesPlayed * 100) / 100 : 0;
       hardPassRate = hardGamesPlayed != 0 ? Math.round(res.hardGamesWon / hardGamesPlayed * 100) / 100 : 0;
       passRate = gamesPlayed != 0 ? Math.round((gamesWon ) / gamesPlayed * 100) / 100: 0;
-    })
-  })
-
+    });
+  });
 
 </script>
 
@@ -45,28 +47,39 @@
     width: auto;
   }
 
+  .card-collection {
+    justify-content: center;
+    display:inline-flex;
+    flex-wrap:wrap;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <main>
   <h1>profile</h1>
   {#if gamesPlayed != null}
-  <AnalyticsCard>
-    <StatisticsBlock title={userName}> <img {src} alt="Avatar" /></StatisticsBlock>
-  </AnalyticsCard>
-    <AnalyticsCardCollection>
-      <AnalyticsCard>
-        <StatisticsBlock title="total games" overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>
-      </AnalyticsCard>
-      <AnalyticsCard>
-        <StatisticsBlock title="pass rate" overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
-      </AnalyticsCard>
-      <AnalyticsCard>
-        <StatisticsBlock title="avg words per minute " overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} units=""/>
-      </AnalyticsCard>
-      <AnalyticsCard>
-        <StatisticsBlock title="avg letters per minute" overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
-      </AnalyticsCard>
-    </AnalyticsCardCollection>
+    <Card title={userName}>
+      <StatisticsBlock>
+        <img {src} alt="Avatar" />
+      </StatisticsBlock>
+    </Card>
+
+    <div class="card-collection">
+      <Card title="total games">
+        <StatisticsBlock overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>
+      </Card>
+      <Card title="pass rate">
+        <StatisticsBlock overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
+      </Card>
+      <Card title="avg words per minute">
+        <StatisticsBlock overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} units=""/>
+      </Card>
+      <Card title="avg letters per minute">
+        <StatisticsBlock overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
+      </Card>
+    </div>
   {/if}
     
 </main>
