@@ -17,6 +17,8 @@ const USER_COLLECTION = "users";
 const LEADERBOARD_COLLECTION = "leaderboard";
 const USERINFO_COLLECTION = "userinfo";
 
+const LEADERBOARD_SIZE = 5;
+
 const defaultUserInfoObject = {
     easyGamesFailed: 0,
     easyGamesWon: 0,
@@ -187,6 +189,14 @@ export async function updateToLeaderboard(user, leadboardType, score) {
                 } 
             }
             if (!(updateToLeaderboard && i == res.data.length - 1)) data.push(res.data[i])
+        }
+        if (res.data.length < LEADERBOARD_SIZE) {
+            updateToLeaderboard = true;
+            let today = new Date(); 
+            let dd = today.getDate(); 
+            let mm = today.getMonth()+1; 
+            let yyyy = today.getFullYear(); 
+            data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
         }
         if (updateToLeaderboard) {
             const docRef = doc(db, LEADERBOARD_COLLECTION, leadboardType);
