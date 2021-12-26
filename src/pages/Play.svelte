@@ -7,7 +7,8 @@
   import { onMount } from 'svelte'
   import { fade } from "svelte/transition"
   
-  let loggedIn = isLoggedIn();
+  let loggedIn = false;
+  isLoggedIn().then(res => loggedIn = res);
 
   // svelte-ignore unused-export-let
   export let currentRoute;

@@ -1,21 +1,26 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
 import { emptyUser, redirectHome, cleanErrorMessage } from "./utils";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { tick } from "svelte";
+import md5 from "md5"
+import SecureLS from "secure-ls";
 
 let app;
 let analytics;
 let auth;
 let db;
 
-const sessionStorage = window.sessionStorage;
+const sessionStorage = new SecureLS();
 
 const USER_STORAGE_ID = "user";
+const USER_TOKEN_ID = "token";
 const USER_COLLECTION = "users";
 const LEADERBOARD_COLLECTION = "leaderboard";
 const USERINFO_COLLECTION = "userinfo";
+const DIARY = "diary";
 
 const LEADERBOARD_SIZE = 5;
 
@@ -58,7 +63,7 @@ export function initFirebase() {
 }
 
 export function getUser() {
-    const sUser = sessionStorage.getItem(USER_STORAGE_ID);
+    const sUser = sessionStorage.get(USER_STORAGE_ID);
 
     if (sUser == null) {
         return null;
@@ -71,8 +76,27 @@ export function getUser() {
     return null;
 }
 
-export function isLoggedIn() {
-    return getUser() != null;
+export function getToken() {
+    const sToken = sessionStorage.get(USER_TOKEN_ID);
+
+    if (sToken == null) {
+        return null;
+    }
+
+    if (sToken.length > 0) {
+        return sToken;
+    }
+
+    return null;
+}
+
+
+export async function isLoggedIn() {
+
+    if (getUser() == null) return false;
+    let validated = await getValidation(getUser().uid)
+    if (!validated) await logoutUser();
+    return getUser() != null && validated;
 }
 
 export async function createUser(email, password) {
@@ -107,9 +131,8 @@ export async function signUserIn(email, password) {
 
             return { data: userCreds.user, success: false };
         }
-
-        sessionStorage.setItem(USER_STORAGE_ID, JSON.stringify(userCreds.user));
-
+        sessionStorage.set(USER_STORAGE_ID, JSON.stringify(userCreds.user));
+        await setValidation(getUser().uid);
         return { success: true };
     } catch(e) {
         return { message: cleanErrorMessage(e.message), success: false };
@@ -125,13 +148,15 @@ export async function createDocument(collection, docID, data) {
 
 export async function logoutUser() {
     try {
+        await createDocument(DIARY, getUser().uid, {token: ""});
         await signOut(auth);
     } catch (e) {
         console.log(e)
     }
 
-    sessionStorage.setItem(USER_STORAGE_ID, "");
     redirectHome();
+    sessionStorage.set(USER_STORAGE_ID, "");
+    sessionStorage.set(USER_TOKEN_ID, "")
 }
 
 
@@ -203,4 +228,32 @@ export async function updateToLeaderboard(user, leadboardType, score) {
             updateDoc(docRef, {data});
         }
     })
+}
+
+
+export async function getValidation(expectedUser) {
+    const docRef = doc(db, DIARY, expectedUser);
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    if (data.token == "") return false
+    if (getToken() === data.token) {
+        await setValidation(expectedUser);
+        return true;
+    }
+    return false;
+}
+
+export async function setValidation(expectedUser) {
+    let newToken = md5(JSON.stringify(getUser()) + Math.floor(Math.random() * 1000000000));
+    await createDocument(DIARY, expectedUser, {token: newToken});
+    insertToken(newToken);
+}
+
+export function insertToken(token) {
+    sessionStorage.set(USER_TOKEN_ID, token);
+}
+
+export async function getValidationSafe() {
+    await tick();
+    await getValidation();
 }

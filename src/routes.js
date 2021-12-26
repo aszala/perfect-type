@@ -9,8 +9,9 @@ import Creators from "./pages/Creators.svelte";
 
 import { isLoggedIn } from "./firebase";
 
-function guard() {
-    return !isLoggedIn();
+async function guard() {
+    let x = await isLoggedIn()
+    return !x;
 }
 
 const routes = [
