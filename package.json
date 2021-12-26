@@ -19,7 +19,9 @@
   },
   "dependencies": {
     "firebase": "^9.6.1",
+    "md5": "^2.3.0",
     "random-words": "^1.1.0",
+    "secure-ls": "^1.2.6",
     "sirv-cli": "^1.0.0",
     "svelte-router-spa": "^6.0.3"
   }

@@ -1,10 +1,9 @@
 <script>
   import Card from "../components/Card.svelte";
   import LeaderboardBlock from "../components/LeaderboardBlock.svelte";
-  import { getLeaderboard } from "../firebase";
+  import { getLeaderboard, getValidation } from "../firebase";
   import { onMount } from "svelte"
-  
-  // svelte-ignore unused-export-let
+    // svelte-ignore unused-export-let
   export let currentRoute;
   // svelte-ignore unused-export-let
   export let params;

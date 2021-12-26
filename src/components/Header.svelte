@@ -1,7 +1,14 @@
 <script>
-import { isLoggedIn } from "../firebase";
+  import { isLoggedIn } from "../firebase";
+  import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
-let loggedIn = isLoggedIn();
+  let loggedIn = false;
+  let loaded = false;
+  isLoggedIn().then(res => {
+    loggedIn = res;
+    loaded = true;
+  });
 
 </script>
 
@@ -36,18 +43,19 @@ a {
 }
 
 </style>
-
-<div class="header">
-  <a id="title" href="/">perfect type</a>
-  <div id="links">
-    <a href="/">play</a>
-    <a href="/leaderboard">leaderboard</a>
-    {#if loggedIn}
-      <a href="/profile">profile</a>
-      <a href="/logout">logout</a>
-    {:else}
-      <a href="/login">login</a>
-      <a href="/signup">signup</a>
+  <div class="header">
+    <a id="title" href="/">perfect type</a>
+    {#if loaded}
+      <div in:fade id="links">
+        <a href="/">play</a>
+        <a href="/leaderboard">leaderboard</a>
+        {#if loggedIn}
+          <a href="/profile">profile</a>
+          <a href="/logout">logout</a>
+        {:else}
+          <a href="/login">login</a>
+          <a href="/signup">signup</a>
+        {/if}
+      </div>
     {/if}
   </div>
-</div>
