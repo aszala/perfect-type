@@ -75,7 +75,12 @@ function shouldShowCreator() {
 		position: absolute;
 		bottom: 10px;
 		left: 50%;
+		color: rgb(0,0,0,0) !important;
 		transform: translateX(-50%);
 		font-size: .2em;
+	}
+
+	#see-devs:hover {
+		color: var(--font-color) !important;
 	}
 </style>
