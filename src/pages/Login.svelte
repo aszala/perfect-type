@@ -1,5 +1,5 @@
 <script>
-import { signUserIn, sendVerifcationEmailAsync, getUser } from "../firebase";
+import { signUserIn, sendVerifcationEmailAsync } from "../firebase";
 import { redirectHome } from "../utils";
 import PerfectButton from "../components/PerfectButton.svelte";
 import Input from "../components/Input.svelte";
@@ -23,8 +23,8 @@ function login(e) {
     }
 
     signUserIn(email, password).then((user) => {
+
         resendError = false;
-        
         if (user.success) {
             error_message = "";
             success = true;
