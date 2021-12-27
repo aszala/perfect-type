@@ -99,6 +99,10 @@
             updateToLeaderboard(getUser(), leaderboardType, wpm);
           }
         }
+      } else {
+        if (event.key == "Enter") {
+          tryAgain(); 
+        }
       }
     };
     document.addEventListener("keypress", handleClick);
@@ -225,12 +229,12 @@
 </style>
 
 
-<main in:fade>
+<main in:fade use:gameListener>
   {#if !gameOver} 
   <GameModes mode={mode} changeMode={changeMode}/>
   <!-- game components : start -->
   <span id="tracker"></span>
-    <div class="game-environment noselect" id="game-env" use:gameListener>
+    <div class="game-environment noselect" id="game-env">
       {#each randomPromptWordSep as word, i}
         <div class="game-word" >
           {#if i != 0}
