@@ -201,28 +201,43 @@ export async function updateToLeaderboard(user, leadboardType, score) {
     getLeaderboard(leadboardType).then( res => {
         const data = []
         let updateToLeaderboard = false;
-        for (let i = 0; i < res.data.length; i++) {
-            if (!updateToLeaderboard) {
-                let elt = JSON.parse(res.data[i]);
-                if (score > elt.score) {
-                    let today = new Date(); 
-                    let dd = today.getDate(); 
-                    let mm = today.getMonth()+1; 
-                    let yyyy = today.getFullYear(); 
+        let today = new Date(); 
+        let dd = today.getDate(); 
+        let mm = today.getMonth()+1; 
+        let yyyy = today.getFullYear(); 
+        if (res.data.length < LEADERBOARD_SIZE) {
+            if (res.data.length == 0 ) {
+                data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
+                updateToLeaderboard = true;
+            } else {
+                for (let i = 0; i < res.data.length; i++) {
+                    if (!updateToLeaderboard) {
+                        let elt = JSON.parse(res.data[i]);
+                        if (score > elt.score) {
+                            data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
+                            updateToLeaderboard = true
+                        } 
+                    }
+                    data.push(res.data[i])
+                }
+                if (!updateToLeaderboard) {
                     data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
                     updateToLeaderboard = true
-                } 
+                }
             }
-            if (!(updateToLeaderboard && i == res.data.length - 1)) data.push(res.data[i])
+        } else {
+            for (let i = 0; i < res.data.length; i++) {
+                if (!updateToLeaderboard) {
+                    let elt = JSON.parse(res.data[i]);
+                    if (score > elt.score) { 
+                        data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
+                        updateToLeaderboard = true
+                    } 
+                }
+                if (!(updateToLeaderboard && i == res.data.length - 1)) data.push(res.data[i])
+            }
         }
-        if (res.data.length < LEADERBOARD_SIZE) {
-            updateToLeaderboard = true;
-            let today = new Date(); 
-            let dd = today.getDate(); 
-            let mm = today.getMonth()+1; 
-            let yyyy = today.getFullYear(); 
-            data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
-        }
+
         if (updateToLeaderboard) {
             const docRef = doc(db, LEADERBOARD_COLLECTION, leadboardType);
             updateDoc(docRef, {data});
