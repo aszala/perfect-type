@@ -7,7 +7,6 @@ import { initFirebase } from "./firebase"
 initFirebase();
 
 function shouldShowCreator() {
-	console.log("adkalw");
 	return !window.location.href.includes("creators");
 }
 
