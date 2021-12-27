@@ -14,10 +14,14 @@ function shouldShowCreator() {
 </script>
 
 <svelte:head>
-	<title>Perfect Type</title>
 	<meta charset="utf-8">
-	<meta name="description" content="Test your typing skills with perfect type. How much and how fast can you type without errors">
-	<meta name="keywords" content="typer,type,perfect,perfect type,perfect-type">
+
+	<!-- if you change this change it also in index.html -->
+	<title>perfect type</title>
+	<meta name="description" content="perfect type is a typing game that requires you to type perfectly. are you up for the challenge?">
+	<meta name="keywords" content="typing, typing game, keyboard, words per minute, wpm, typing speed, typer, online game, game, play, internet games, online games, internet game, typing games, type speed, typing speed, games to play on the internet, typing games to play, typing games to play online">
+	<meta name="author" content="perfect type devs">
+
 	<link rel="canonical" href="https://perfect-type.com/" />
 	<meta name="robots" content="index, follow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
