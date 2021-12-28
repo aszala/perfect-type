@@ -17,7 +17,7 @@
 
   // - GAME MODE VARIABLES - 
   let mode = "easy";
-  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
+  const gameModeWordAmount = {'easy': 5, 'medium': 3, 'hard': 50 };
   wordsToDisplay.update(() => gameModeWordAmount[mode]);
   function changeMode(e) {
     let currentModeDiv = document.getElementById(mode);
@@ -80,7 +80,8 @@
           let endTime = new Date();
           let totalMinutes = (endTime - startTime) / 60000; 
           let lpm = Math.round(randomPrompt.length / totalMinutes * 1000) / 1000;
-          wpm = Math.round(randomPromptWordSep.length / totalMinutes * 1000) / 1000;
+          const avgLetterPerWord = 4.7;
+          wpm = Math.round((randomPrompt.length - (randomPromptWordSep.length - 1)) / avgLetterPerWord / totalMinutes * 1000) / 1000;
           gameOver = true;
           winGame = true;
           if (loggedIn) {

@@ -205,38 +205,50 @@ export async function updateToLeaderboard(user, leadboardType, score) {
         let dd = today.getDate(); 
         let mm = today.getMonth()+1; 
         let yyyy = today.getFullYear(); 
-        if (res.data.length < LEADERBOARD_SIZE) {
-            if (res.data.length == 0 ) {
-                data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
-                updateToLeaderboard = true;
-            } else {
-                for (let i = 0; i < res.data.length; i++) {
-                    if (!updateToLeaderboard) {
-                        let elt = JSON.parse(res.data[i]);
-                        if (score > elt.score) {
-                            data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
-                            updateToLeaderboard = true
-                        } 
-                    }
+        let thisUserName = user.email.substr(0, user.email.indexOf("@"));
+        if (res.data.length == 0) {
+            data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+            updateToLeaderboard = true;
+        } else if (res.data.length < LEADERBOARD_SIZE) {
+            let inserted = false;
+            for (let i = 0; i < res.data.length; i++) {
+                let elt = JSON.parse(res.data[i])
+                if (!inserted && score > elt.score) {
+                    inserted = true;
+                    updateToLeaderboard = true;
+                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                }
+                
+                if (!inserted) {
+                    if (elt.user === thisUserName) inserted = true;
                     data.push(res.data[i])
+                } else {
+                    if (elt.user !== thisUserName) data.push(res.data[i])
                 }
-                if (!updateToLeaderboard) {
-                    data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
-                    updateToLeaderboard = true
-                }
+            }
+            if (!inserted) {
+                updateToLeaderboard = true;
+                data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
             }
         } else {
+            let inserted = false;
             for (let i = 0; i < res.data.length; i++) {
-                if (!updateToLeaderboard) {
-                    let elt = JSON.parse(res.data[i]);
-                    if (score > elt.score) { 
-                        data.push(JSON.stringify({user: user.email.substr(0, user.email.indexOf("@")), score: score, date: `${mm}/${dd}/${yyyy}`}))
-                        updateToLeaderboard = true
-                    } 
+                let elt = JSON.parse(res.data[i])
+                if (!inserted && score > elt.score) {
+                    inserted = true;
+                    updateToLeaderboard = true;
+                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
-                if (!(updateToLeaderboard && i == res.data.length - 1)) data.push(res.data[i])
+                
+                if (!inserted) {
+                    if (elt.user === thisUserName) inserted = true;
+                    data.push(res.data[i])
+                } else {
+                    if (elt.user !== thisUserName && i != res.data.length - 1) data.push(res.data[i])
+                }
             }
         }
+        
 
         if (updateToLeaderboard) {
             const docRef = doc(db, LEADERBOARD_COLLECTION, leadboardType);
