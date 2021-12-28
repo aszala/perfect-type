@@ -51,8 +51,9 @@ export function generateRandomString() {
   }
 
 
-export let tracker = null;
+export let tracker = document.getElementById("tracker");
 export async function initializeTracker() {
+    await tick();
     await tick();
     tracker = document.getElementById("tracker");
     let letterOffsets = document.getElementById(0).getBoundingClientRect();
