@@ -54,9 +54,10 @@ export function generateRandomString() {
 export let tracker = document.getElementById("tracker");
 export async function initializeTracker() {
     await tick();
-    await tick();
     tracker = document.getElementById("tracker");
+    await tick();
     let letterOffsets = document.getElementById(0).getBoundingClientRect();
+    await tick();
     tracker.style.top = (letterOffsets.bottom - 50) + "px";
     tracker.style.left = (letterOffsets.left+.5) + "px";
     tracker.style.width = (letterOffsets.width+.75) + "px";
