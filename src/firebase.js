@@ -165,8 +165,18 @@ export async function getLeaderboard(board) {
     const docRef = doc(db, LEADERBOARD_COLLECTION, board);
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
-    return data
+    let res = []
+
+    for await (let item of data.data) {
+        item = JSON.parse(item);
+        let profile = await getUserProfile(item.uid);
+        if (profile.profilePhoto != null) item['profilePhoto'] = profile.profilePhoto;
+        else item['profilePhoto'] = 0;
+        res.push(item)
+    }
+    return res;
 }
+
 
 export async function getUserProfile(userID) {
     const docRef = doc(db, USERINFO_COLLECTION, userID);
@@ -207,8 +217,9 @@ export async function updateToLeaderboard(user, leadboardType, score) {
         let mm = today.getMonth()+1; 
         let yyyy = today.getFullYear(); 
         let thisUserName = user.email.substr(0, user.email.indexOf("@"));
+        let thisUID = user.uid;
         if (res.data.length == 0) {
-            data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+            data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
             updateToLeaderboard = true;
         } else if (res.data.length < LEADERBOARD_SIZE) {
             let inserted = false;
@@ -217,7 +228,7 @@ export async function updateToLeaderboard(user, leadboardType, score) {
                 if (!inserted && score > elt.score) {
                     inserted = true;
                     updateToLeaderboard = true;
-                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                    data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {
@@ -229,7 +240,7 @@ export async function updateToLeaderboard(user, leadboardType, score) {
             }
             if (!inserted) {
                 updateToLeaderboard = true;
-                data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
             }
         } else {
             let inserted = false;
@@ -238,7 +249,7 @@ export async function updateToLeaderboard(user, leadboardType, score) {
                 if (!inserted && score > elt.score) {
                     inserted = true;
                     updateToLeaderboard = true;
-                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                    data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {

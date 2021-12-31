@@ -1,16 +1,23 @@
 <script>
   export let user;
+  export let profilePhoto;
   export let score;
   export let place;
   export let date;
+  import { profilePhotoLocation } from "../utils";
 </script>
 
 <style>
   .leaderboard-env {
     padding: 10px;
     border-bottom: .5mm solid black;
-    min-width: 175px;
     display: flex;
+  }
+
+  img {
+    border-radius: 50%;
+    height: 30px;
+    width: auto;
   }
 
   .block-item {
@@ -33,12 +40,13 @@
 
 <div class="leaderboard-env">
   <div class="block-item"><strong>{`${place}`}</strong></div>
+  <div class="block-item profile-photo"><img alt="avatar" src={profilePhotoLocation + 'photo' + profilePhoto + '.png'}></div>
   <div class="block-item date">
     {user}
     <br>
     {date}
+    <br>
   </div>
-
   <div class="block-item score">
     {score}
   </div>
