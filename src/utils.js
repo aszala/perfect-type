@@ -64,3 +64,5 @@ export async function initializeTracker() {
     tracker.style.left = (letterOffsets.left+.5) + "px";
     tracker.style.width = (letterOffsets.width+.75) + "px";
 }
+
+export const profilePhotoLocation = '/profile-photos/';

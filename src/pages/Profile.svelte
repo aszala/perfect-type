@@ -1,8 +1,13 @@
 <script>
   import Card from "../components/Card.svelte";
   import StatisticsBlock from "../components/StatisticsBlock.svelte";
-  import { getUser, getUserProfile } from "../firebase";
+  import { getUser, getUserProfile, updateUserStats } from "../firebase";
   import { onMount } from "svelte";
+  import { profilePhotoLocation } from "../utils";
+  import { Modal } from 'svelte-simple-modal';
+  import ProfilePhotoContent from "../components/ProfilePhotoContent.svelte";
+
+
 
   // svelte-ignore unused-export-let
   export let currentRoute;
@@ -14,7 +19,10 @@
   let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM;
   let avgLPM, avgEasyLPM, avgMediumLPM, avgHardLPM;
   let passRate, easyPassRate, mediumPassRate, hardPassRate;
-  let src = ' /default_avatar.png';
+  let src = profilePhotoLocation + 'photo0.png';
+  let currentAvatar = 0;
+  let newAvatar = 0;
+
 
   onMount(() => {
     getUserProfile(getUser().uid).then(res => {
@@ -35,8 +43,46 @@
       mediumPassRate = mediumGamesPlayed != 0 ?  Math.round(res.mediumGamesWon / mediumGamesPlayed * 100) / 100 : 0;
       hardPassRate = hardGamesPlayed != 0 ? Math.round(res.hardGamesWon / hardGamesPlayed * 100) / 100 : 0;
       passRate = gamesPlayed != 0 ? Math.round((gamesWon ) / gamesPlayed * 100) / 100: 0;
+      if (res.profilePhoto == null) {
+        updateUserStats(getUser().uid, {profilePhoto: 0})
+      } else {
+        currentAvatar = res.profilePhoto;
+        newAvatar = currentAvatar;
+        src = profilePhotoLocation + 'photo' + res.profilePhoto + '.png';
+      }
     });
   });
+
+  // profile selection functions
+  const idPrefix = "profile-photo-";
+  function switchAvatar(e) {
+    const currentSelectedAvatarID=idPrefix+newAvatar;
+    if (e.target.id != currentSelectedAvatarID) {
+      // currentAvatar = e.target.id.substr(idPrefix.length)
+      let clickedAvatar = document.getElementById(e.target.id);
+      clickedAvatar.classList.remove("nonselected-avatar");
+      clickedAvatar.classList.add("selected-avatar");
+      let currentSelectedAvatar = document.getElementById(currentSelectedAvatarID);
+      currentSelectedAvatar.classList.remove("selected-avatar")
+      currentSelectedAvatar.classList.add("nonselected-avatar")
+      newAvatar = e.target.id.substr(idPrefix.length);
+    }
+
+  }
+
+  async function applyChanges() {
+    currentAvatar = newAvatar;
+    src = profilePhotoLocation + 'photo' + newAvatar + '.png';
+    updateUserStats(getUser().uid, {profilePhoto: newAvatar});
+  }
+
+  function cancelChanges() {
+    const currentSelectedAvatarID=idPrefix+newAvatar;
+    let currentSelectedAvatar = document.getElementById(currentSelectedAvatarID);
+    currentSelectedAvatar.classList.remove("selected-avatar")
+    currentSelectedAvatar.classList.add("nonselected-avatar")
+    newAvatar = currentAvatar;
+  }
 
 </script>
 
@@ -65,6 +111,10 @@
       <StatisticsBlock>
         <img {src} alt="Avatar" />
       </StatisticsBlock>
+      <br>
+      <Modal>
+        <ProfilePhotoContent currentAvatar={currentAvatar} switchAvatar={switchAvatar} applyChanges={applyChanges} cancelChanges={cancelChanges}/>
+      </Modal>
     </Card>
     <br>
     <div class="card-collection">
@@ -82,5 +132,7 @@
       </Card>
     </div>
   {/if}
+
+  
     
 </main>

@@ -37,6 +37,7 @@ const defaultUserInfoObject = {
     mediumGamesWon: 0,
     mediumLPM: 0,
     mediumWPM: 0,
+    profilePhoto: 0,
 };
 
 export function initFirebase() {
