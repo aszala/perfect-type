@@ -218,24 +218,24 @@ export async function updateToLeaderboard(user, leadboardType, score) {
         let yyyy = today.getFullYear(); 
         let thisUserName = user.email.substr(0, user.email.indexOf("@"));
         let thisUID = user.uid;
-        if (res.data.length == 0) {
+        if (res.length == 0) {
             data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
             updateToLeaderboard = true;
-        } else if (res.data.length < LEADERBOARD_SIZE) {
+        } else if (res.length < LEADERBOARD_SIZE) {
             let inserted = false;
-            for (let i = 0; i < res.data.length; i++) {
-                let elt = JSON.parse(res.data[i])
-                if (!inserted && score > elt.score) {
+            for (let i = 0; i < res.length; i++) {
+
+                if (!inserted && score > res[i].score) {
                     inserted = true;
                     updateToLeaderboard = true;
                     data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {
-                    if (elt.user === thisUserName) inserted = true;
-                    data.push(res.data[i])
+                    if (res[i].user === thisUserName) inserted = true;
+                    data.push(JSON.stringify(res[i]))
                 } else {
-                    if (elt.user !== thisUserName) data.push(res.data[i])
+                    if (res[i].user !== thisUserName) data.push(JSON.stringify(res[i]))
                 }
             }
             if (!inserted) {
@@ -244,19 +244,18 @@ export async function updateToLeaderboard(user, leadboardType, score) {
             }
         } else {
             let inserted = false;
-            for (let i = 0; i < res.data.length; i++) {
-                let elt = JSON.parse(res.data[i])
-                if (!inserted && score > elt.score) {
+            for (let i = 0; i < res.length; i++) {
+                if (!inserted && score > res[i].score) {
                     inserted = true;
                     updateToLeaderboard = true;
                     data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {
-                    if (elt.user === thisUserName) inserted = true;
-                    data.push(res.data[i])
+                    if (res[i].user === thisUserName) inserted = true;
+                    data.push(JSON.stringify(res[i]))
                 } else {
-                    if (elt.user !== thisUserName && i != res.data.length - 1) data.push(res.data[i])
+                    if (res[i].user !== thisUserName && i != res.length - 1) data.push(JSON.stringify(res[i]))
                 }
             }
         }
