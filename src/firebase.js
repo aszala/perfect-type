@@ -37,6 +37,7 @@ const defaultUserInfoObject = {
     mediumGamesWon: 0,
     mediumLPM: 0,
     mediumWPM: 0,
+    profilePhoto: 0,
 };
 
 export function initFirebase() {
@@ -164,8 +165,18 @@ export async function getLeaderboard(board) {
     const docRef = doc(db, LEADERBOARD_COLLECTION, board);
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
-    return data
+    let res = []
+
+    for await (let item of data.data) {
+        item = JSON.parse(item);
+        let profile = await getUserProfile(item.uid);
+        if (profile.profilePhoto != null) item['profilePhoto'] = profile.profilePhoto;
+        else item['profilePhoto'] = 0;
+        res.push(item)
+    }
+    return res;
 }
+
 
 export async function getUserProfile(userID) {
     const docRef = doc(db, USERINFO_COLLECTION, userID);
@@ -206,45 +217,45 @@ export async function updateToLeaderboard(user, leadboardType, score) {
         let mm = today.getMonth()+1; 
         let yyyy = today.getFullYear(); 
         let thisUserName = user.email.substr(0, user.email.indexOf("@"));
-        if (res.data.length == 0) {
-            data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+        let thisUID = user.uid;
+        if (res.length == 0) {
+            data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
             updateToLeaderboard = true;
-        } else if (res.data.length < LEADERBOARD_SIZE) {
+        } else if (res.length < LEADERBOARD_SIZE) {
             let inserted = false;
-            for (let i = 0; i < res.data.length; i++) {
-                let elt = JSON.parse(res.data[i])
-                if (!inserted && score > elt.score) {
+            for (let i = 0; i < res.length; i++) {
+
+                if (!inserted && score > res[i].score) {
                     inserted = true;
                     updateToLeaderboard = true;
-                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                    data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {
-                    if (elt.user === thisUserName) inserted = true;
-                    data.push(res.data[i])
+                    if (res[i].user === thisUserName) inserted = true;
+                    data.push(JSON.stringify(res[i]))
                 } else {
-                    if (elt.user !== thisUserName) data.push(res.data[i])
+                    if (res[i].user !== thisUserName) data.push(JSON.stringify(res[i]))
                 }
             }
             if (!inserted) {
                 updateToLeaderboard = true;
-                data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
             }
         } else {
             let inserted = false;
-            for (let i = 0; i < res.data.length; i++) {
-                let elt = JSON.parse(res.data[i])
-                if (!inserted && score > elt.score) {
+            for (let i = 0; i < res.length; i++) {
+                if (!inserted && score > res[i].score) {
                     inserted = true;
                     updateToLeaderboard = true;
-                    data.push(JSON.stringify({user: thisUserName, score: score, date: `${mm}/${dd}/${yyyy}`}))
+                    data.push(JSON.stringify({user: thisUserName, uid: thisUID, score: score, date: `${mm}/${dd}/${yyyy}`}))
                 }
                 
                 if (!inserted) {
-                    if (elt.user === thisUserName) inserted = true;
-                    data.push(res.data[i])
+                    if (res[i].user === thisUserName) inserted = true;
+                    data.push(JSON.stringify(res[i]))
                 } else {
-                    if (elt.user !== thisUserName && i != res.data.length - 1) data.push(res.data[i])
+                    if (res[i].user !== thisUserName && i != res.length - 1) data.push(JSON.stringify(res[i]))
                 }
             }
         }
