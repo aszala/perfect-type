@@ -136,7 +136,7 @@ export async function signUserIn(email, password) {
         await setValidation(getUser().uid);
         return { success: true };
     } catch(e) {
-        return { message: cleanErrorMessage(e.message), success: false };
+        return { success: false };
     }
 }
 
