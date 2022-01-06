@@ -36,7 +36,7 @@ function login(e) {
                 error_message = "";
                 resendError = true;
             } else {
-                error_message = user.message;
+                error_message = "invalid login credentials";
             }
         }
     });
