@@ -3,12 +3,9 @@ import { Router } from 'svelte-router-spa'
 import { routes } from './routes'
 import Header from "./components/Header.svelte"
 import { initFirebase } from "./firebase"
+import DeviceDetector from "svelte-device-detector";
 
 initFirebase();
-
-function shouldShowCreator() {
-	return !window.location.href.includes("creators");
-}
 
 </script>
 
@@ -27,11 +24,47 @@ function shouldShowCreator() {
 	<meta name="google" content="nositelinkssearchbox" />
 </svelte:head>
 
-<Header />
-<Router {routes} />
-<a id="see-devs" href="/creators">see the site devs</a>
+<DeviceDetector showInDevice="desktop">
+	<Header />
+	<Router {routes} />
+	<a id="see-devs" href="/creators">see the site devs</a>
+</DeviceDetector>
+
+<DeviceDetector showInDevice="mobile">
+	<div id="desktop-notifier">
+		<a href="/">perfect type</a>
+		<div>mobile is not supported yet :(
+			<br><br>
+			please use a laptop or desktop device
+			<br><br>
+			mobile support is coming soon.
+		</div>
+	</div>
+</DeviceDetector>
 
 <style>
+	#desktop-notifier {
+		width: 100%;
+		height: 100%;
+	}
+
+	#desktop-notifier>a {
+		font-size: 3em;
+  		font-weight: bold;
+		text-decoration: none;
+	}
+
+	#desktop-notifier>div {
+		font-size: 1.5em;
+		width: 100%;
+		height: 70vh;
+		margin: 0px;
+		display: table-cell;
+		vertical-align: middle;
+		padding: 10px;
+		text-align: center;
+	}
+
 	:global(:root) {
 		--main-bg-color: #F4F1E2;
 		--main-accent-color: rgb(0, 0, 0, .85);
