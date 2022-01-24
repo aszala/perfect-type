@@ -212,7 +212,7 @@
     position: absolute;
     left: auto;
     transition: background-color .05s ease-in;
-    transition: left .025s ease-in-out;
+    transition: left 200ms;
     background-color: var(--game-font-color);
     animation: blinking .4s infinite;
     -webkit-animation: blinking .4s infinite backwards alternate;
