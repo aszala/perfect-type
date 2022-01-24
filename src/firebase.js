@@ -22,7 +22,7 @@ const LEADERBOARD_COLLECTION = "leaderboard";
 const USERINFO_COLLECTION = "userinfo";
 const DIARY = "diary";
 
-const LEADERBOARD_SIZE = 5;
+const LEADERBOARD_SIZE = 10;
 
 const defaultUserInfoObject = {
     easyGamesFailed: 0,

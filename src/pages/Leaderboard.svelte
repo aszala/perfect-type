@@ -47,28 +47,28 @@
     <div class="card-collection">
 
       <Card title="easy (wpm)">
-        {#each easyLeaderboardWPM as userObject, i}
+        {#each easyLeaderboardWPM.slice(0, 5) as userObject, i}
           <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
         {/each}
       </Card>
 
 
       <Card title="medium (wpm)">
-        {#each mediumLeaderboardWPM as userObject, i}
+        {#each mediumLeaderboardWPM.slice(0, 5) as userObject, i}
           <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
         {/each}
       </Card>
 
 
       <Card title="hard (wpm)">
-        {#each hardLeaderboardWPM as userObject, i}
+        {#each hardLeaderboardWPM.slice(0, 5) as userObject, i}
           <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
         {/each}
       </Card>
 
       
       <Card title="impossible (wpm)">
-        {#each impossibleLeaderboardWPM as userObject, i}
+        {#each impossibleLeaderboardWPM.slice(0, 5) as userObject, i}
           <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
         {/each}
       </Card>
