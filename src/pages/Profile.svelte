@@ -14,11 +14,11 @@
   // svelte-ignore unused-export-let
   export let params;
 
-  let gamesPlayed, easyGamesPlayed, mediumGamesPlayed, hardGamesPlayed;
+  let gamesPlayed, easyGamesPlayed, mediumGamesPlayed, hardGamesPlayed, impossibleGamesPlayed;
   let userName = getUser().email.substr(0, getUser().email.indexOf("@"))
-  let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM;
-  let avgLPM, avgEasyLPM, avgMediumLPM, avgHardLPM;
-  let passRate, easyPassRate, mediumPassRate, hardPassRate;
+  let avgWPM, avgEasyWPM, avgMediumWPM, avgHardWPM, avgImpossibleWPM;
+  let avgLPM, avgEasyLPM, avgMediumLPM, avgHardLPM, avgImpossibleLPM;
+  let passRate, easyPassRate, mediumPassRate, hardPassRate, impossiblePassRate;
   let src = profilePhotoLocation + 'photo0.png';
   let currentAvatar = 0;
   let newAvatar = 0;
@@ -119,16 +119,16 @@
     <br>
     <div class="card-collection">
       <Card title="total games">
-        <StatisticsBlock overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} units=""/>
+        <StatisticsBlock overall={gamesPlayed} easy={easyGamesPlayed} medium={mediumGamesPlayed} hard={hardGamesPlayed} impossible={impossibleGamesPlayed} units=""/>
       </Card>
       <Card title="pass rate">
-        <StatisticsBlock overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} units="%"/>
+        <StatisticsBlock overall={passRate*100} easy={easyPassRate*100} medium={mediumPassRate*100} hard={hardPassRate*100} impossible={impossiblePassRate} units="%"/>
       </Card>
       <Card title="avg words per minute">
-        <StatisticsBlock overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} units=""/>
+        <StatisticsBlock overall={avgWPM} easy={avgEasyWPM} medium={avgMediumWPM} hard={avgHardWPM} impossible={avgImpossibleWPM} units=""/>
       </Card>
       <Card title="avg letters per minute">
-        <StatisticsBlock overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} units=""/>
+        <StatisticsBlock overall={avgLPM} easy={avgEasyLPM} medium={avgMediumLPM} hard={avgHardLPM} impossible={avgImpossibleLPM} units=""/>
       </Card>
     </div>
   {/if}

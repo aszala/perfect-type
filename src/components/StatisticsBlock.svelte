@@ -2,6 +2,7 @@
   export let overall = null;
   export let easy = null;
   export let medium = null;
+  export let impossible = null;
   export let hard = null;
   export let units = null;
 </script>
@@ -32,11 +33,13 @@
       <td class="heading">easy</td>
       <td class="heading">medium</td>
       <td class="heading">hard</td>
+      <td class="heading">impossible</td>
     </tr>
     <tr>
       <td>{`${Math.round(easy * 100) / 100}${units}`}</td>
       <td>{`${Math.round(medium * 100) / 100}${units}`}</td>
       <td>{`${Math.round(hard * 100) / 100}${units}`}</td>
+      <td>{`${Math.round(impossible * 100) / 100}${units}`}</td>
     </tr>
   </table>
 {/if}

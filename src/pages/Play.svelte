@@ -17,7 +17,7 @@
 
   // - GAME MODE VARIABLES - 
   let mode = "easy";
-  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50 };
+  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50, 'impossible': -1 };
   wordsToDisplay.update(() => gameModeWordAmount[mode]);
   function changeMode(e) {
     let currentModeDiv = document.getElementById(mode);

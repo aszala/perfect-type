@@ -46,7 +46,18 @@ export function generateRandomString() {
     let promptLength = 5;
     wordsToDisplay.subscribe(value => {
       promptLength = value;
-    })
+    });
+
+    if (promptLength == -1) { // Impossible mode
+        let words = [];
+
+        for (let i=0;i<50;i++) {
+            words.push(makeFakeWord(Math.random() * 10 + 1));
+        }
+
+        return words.join(" ")
+    }
+
     return randomWords(promptLength).join(" ");
   }
 
@@ -66,3 +77,15 @@ export async function initializeTracker() {
 }
 
 export const profilePhotoLocation = '/profile-photos/';
+
+
+function makeFakeWord(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(){}:";<>,./?~`';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+   return result;
+}

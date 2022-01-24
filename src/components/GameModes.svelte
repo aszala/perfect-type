@@ -39,4 +39,5 @@
   <div class={`mode-div ${mode === 'easy' ? 'active-mode' : "inactive-mode"}`} id="easy" on:click={changeMode}>easy</div>
   <div class={`mode-div ${mode === 'medium' ? 'active-mode' : "inactive-mode"}`} id="medium" on:click={changeMode}>medium</div>
   <div class={`mode-div ${mode === 'hard' ? 'active-mode' : "inactive-mode"}`} id="hard" on:click={changeMode}>hard</div>
+  <div class={`mode-div ${mode === 'impossible' ? 'active-mode' : "inactive-mode"}`} id="impossible" on:click={changeMode}>impossible</div>
 </div>

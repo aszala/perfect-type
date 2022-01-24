@@ -11,6 +11,7 @@
   let easyLeaderboardWPM = [];
   let mediumLeaderboardWPM = [];
   let hardLeaderboardWPM = [];
+  let impossibleLeaderboardWPM = [];
 
   onMount(() => {
     getLeaderboard("easy_wpm").then( res => {
@@ -21,6 +22,9 @@
     })
     getLeaderboard("hard_wpm").then( res => {
       hardLeaderboardWPM = res;
+    })
+    getLeaderboard("impossible_wpm").then( res => {
+      impossibleLeaderboardWPM = res;
     })
   })
   
@@ -39,7 +43,7 @@
 
 <main>
   <h1>leaderboard</h1>
-  {#if !(easyLeaderboardWPM.length == 0 || mediumLeaderboardWPM.length == 0 || hardLeaderboardWPM.length == 0)}
+  {#if !(easyLeaderboardWPM.length == 0 || mediumLeaderboardWPM.length == 0 || hardLeaderboardWPM.length == 0 || impossibleLeaderboardWPM.length == 0)}
     <div class="card-collection">
 
       <Card title="easy (wpm)">
@@ -58,6 +62,13 @@
 
       <Card title="hard (wpm)">
         {#each hardLeaderboardWPM as userObject, i}
+          <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
+        {/each}
+      </Card>
+
+      
+      <Card title="impossible (wpm)">
+        {#each impossibleLeaderboardWPM as userObject, i}
           <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
         {/each}
       </Card>
