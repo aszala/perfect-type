@@ -1,7 +1,10 @@
 <script>
   export let mode;
   export let changeMode;
+  import randomWords from 'random-words'
 
+
+  let botScrambler = randomWords(4);
 </script>
 
 <style>
@@ -36,8 +39,8 @@
 </style>
 
 <div class="mode-container">
-  <div class={`mode-div ${mode === 'easy' ? 'active-mode' : "inactive-mode"}`} id="easy" on:click={changeMode}>easy</div>
-  <div class={`mode-div ${mode === 'medium' ? 'active-mode' : "inactive-mode"}`} id="medium" on:click={changeMode}>medium</div>
-  <div class={`mode-div ${mode === 'hard' ? 'active-mode' : "inactive-mode"}`} id="hard" on:click={changeMode}>hard</div>
-  <div class={`mode-div ${mode === 'impossible' ? 'active-mode' : "inactive-mode"}`} id="impossible" on:click={changeMode}>impossible</div>
+  <div class={`mode-div ${mode === 'easy' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[0]} on:click={(e) => { changeMode(e, botScrambler[0]); }}>easy</div>
+  <div class={`mode-div ${mode === 'medium' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[1]} on:click={(e) => { changeMode(e, botScrambler[1]); }}>medium</div>
+  <div class={`mode-div ${mode === 'hard' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[2]} on:click={(e) => { changeMode(e, botScrambler[2]); }}>hard</div>
+  <div class={`mode-div ${mode === 'impossible' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[3]} on:click={(e) => { changeMode(e, botScrambler[3]); }}>impossible</div>
 </div>

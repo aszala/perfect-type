@@ -19,10 +19,11 @@
   let mode = "easy";
   const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50, 'impossible': -1 };
   wordsToDisplay.update(() => gameModeWordAmount[mode]);
-  function changeMode(e) {
-    let currentModeDiv = document.getElementById(mode);
+  function changeMode(e, id) {
+    let currentModeDiv = document.getElementsByClassName("active-mode")[0];
     currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
-    let newModeDiv = document.getElementById(e.target.innerHTML);
+    let newModeDiv = document.getElementById(id);
+
     newModeDiv.className += ' active-mode';
     mode = e.target.innerHTML
     wordsToDisplay.update(() => gameModeWordAmount[mode]);
