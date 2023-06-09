@@ -22,6 +22,7 @@ initFirebase();
 	<meta name="robots" content="index, follow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="google" content="nositelinkssearchbox" />
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5479752995149616" crossorigin="anonymous"></script>
 </svelte:head>
 
 <DeviceDetector showInDevice="desktop">
