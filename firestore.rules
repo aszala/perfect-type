@@ -1,0 +1,110 @@
+rules_version = '2';
+
+// Deploy with `npm run deploy:rules`. Tests: tests/rules/firestore.rules.test.js (`npm run test:rules`).
+// Anything not matched below, including the collections from before 2026
+// (users, userinfo, leaderboard, diary), is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function profilePath(uid) {
+      return /databases/$(database)/documents/profiles/$(uid);
+    }
+
+    function usernamePath(username) {
+      return /databases/$(database)/documents/usernames/$(username);
+    }
+
+    function validPhoto(photo) {
+      return photo is int && photo >= 0 && photo <= 9;
+    }
+
+    // Usernames are claimed in the same batch that creates the profile.
+    match /usernames/{username} {
+      allow get: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(profilePath(request.auth.uid)).data.username == username;
+      // Only when deleting the account in the same batch.
+      allow delete: if signedIn()
+        && resource.data.uid == request.auth.uid
+        && !existsAfter(profilePath(request.auth.uid));
+    }
+
+    match /profiles/{uid} {
+      allow read: if isSelf(uid);
+      allow create: if isSelf(uid)
+        && request.resource.data.keys().hasOnly(['username', 'photo', 'createdAt', 'stats'])
+        && request.resource.data.username is string
+        && request.resource.data.username.matches('^[a-z0-9_]{3,16}$')
+        && getAfter(usernamePath(request.resource.data.username)).data.uid == uid
+        && validPhoto(request.resource.data.photo)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.stats is map;
+      // Stats are only shown to their owner, so they're not checked beyond their shape.
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photo', 'stats'])
+        && validPhoto(request.resource.data.photo)
+        && request.resource.data.stats is map;
+      allow delete: if isSelf(uid)
+        && !existsAfter(usernamePath(resource.data.username));
+    }
+
+    // Each player's best run per mode.
+    match /leaderboards/{mode}/scores/{uid} {
+      allow read: if true;
+      allow create: if validScore(mode, uid);
+      allow update: if (validScore(mode, uid) && request.resource.data.wpm > resource.data.wpm)
+        || (isSelf(uid) && photoChangeOnly());
+      allow delete: if isSelf(uid);
+
+      // Server-side anti-cheat. The client also screens runs for bot-like typing before submitting.
+      function validScore(mode, uid) {
+        let score = request.resource.data;
+        // Possible prompt lengths per mode (word count, word lengths and spaces), loosely bounded.
+        let chars = {
+          'easy': [10, 80],
+          'medium': [40, 320],
+          'hard': [100, 800],
+          'impossible': [50, 600]
+        };
+        return isSelf(uid)
+          && request.auth.token.email_verified == true
+          && !exists(/databases/$(database)/documents/banned/$(uid))
+          && mode in chars
+          && score.keys().hasOnly(['uid', 'username', 'photo', 'wpm', 'chars', 'durationMs', 'achievedAt'])
+          && score.uid == uid
+          && score.username == get(profilePath(uid)).data.username
+          && validPhoto(score.photo)
+          && score.chars is int
+          && score.chars >= chars[mode][0]
+          && score.chars <= chars[mode][1]
+          && score.durationMs is int
+          && score.durationMs > 0
+          && score.wpm is number
+          && score.wpm > 0
+          // keep in sync with MAX_WPM in src/lib/game.js
+          && score.wpm <= 300
+          // the score has to match the characters and time it claims
+          && math.abs(score.wpm - score.chars * 12000.0 / score.durationMs) < 0.5
+          && score.achievedAt == request.time;
+      }
+
+      function photoChangeOnly() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photo'])
+          && validPhoto(request.resource.data.photo);
+      }
+    }
+
+    // banned/{uid}: add a document here in the Firebase console to keep a player off the
+    // leaderboard. Clients can't read or write it.
+  }
+}

@@ -1,46 +1,57 @@
 <script>
-  export let mode;
-  export let changeMode;
-  import randomWords from 'random-words'
+  import { MODE_NAMES } from '../lib/game.js';
 
+  let { mode, onselect } = $props();
 
-  let botScrambler = randomWords(4);
+  function select(event, name) {
+    // A focused button would also react to the space bar while typing.
+    event.currentTarget.blur();
+    onselect(name);
+  }
 </script>
 
-<style>
-  .mode-container {
-    width:100%;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    text-align: center;
-    vertical-align: middle;
-    user-select: none;
-    font-size: 1.3em;
-    position: relative;
-    top: 50px;
-  }
-  .mode-div {
-    float:left;
-    width:100px;
-    height: 30px;
-    padding: 2px;
-    cursor: pointer;
-  }
-
-  .inactive-mode:hover {
-    border-bottom: .25mm solid rgba(68, 68, 68, 0.5);
-  }
-
-  .active-mode {
-    border-bottom: .5mm solid var(--font-color);
-  }
-
-</style>
-
-<div class="mode-container">
-  <div class={`mode-div ${mode === 'easy' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[0]} on:click={(e) => { changeMode(e, botScrambler[0]); }}>easy</div>
-  <div class={`mode-div ${mode === 'medium' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[1]} on:click={(e) => { changeMode(e, botScrambler[1]); }}>medium</div>
-  <div class={`mode-div ${mode === 'hard' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[2]} on:click={(e) => { changeMode(e, botScrambler[2]); }}>hard</div>
-  <div class={`mode-div ${mode === 'impossible' ? 'active-mode' : "inactive-mode"}`} id={botScrambler[3]} on:click={(e) => { changeMode(e, botScrambler[3]); }}>impossible</div>
+<div class="modes" role="group" aria-label="game mode">
+  {#each MODE_NAMES as name (name)}
+    <button class:active={name === mode} aria-pressed={name === mode} onclick={(e) => select(e, name)}>
+      {name}
+    </button>
+  {/each}
 </div>
+
+<style>
+  .modes {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    user-select: none;
+  }
+
+  button {
+    padding: 0.45em 1.1em;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition:
+      color 150ms,
+      background-color 150ms;
+  }
+
+  button:hover {
+    color: var(--ink);
+  }
+
+  button.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  @media (max-width: 420px) {
+    button {
+      padding: 0.45em 0.75em;
+    }
+  }
+</style>

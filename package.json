@@ -1,32 +1,28 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
+  "name": "perfect-type",
+  "version": "2.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public -s --no-clear"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0",
-    "svelte-fa": "^2.4.0"
+    "dev": "vite",
+    "dev:emulators": "vite --mode emulators",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "emulators": "npx --yes firebase-tools@15 emulators:start --only auth,firestore --project demo-perfect-type",
+    "test:rules": "npx --yes firebase-tools@15 emulators:exec --only firestore --project demo-perfect-type \"vitest run --config vitest.rules.config.js\"",
+    "deploy:rules": "npx --yes firebase-tools@15 deploy --only firestore:rules --project perfect-type"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "firebase": "^9.6.1",
-    "md5": "^2.3.0",
-    "random-words": "^1.1.0",
-    "secure-ls": "^1.2.6",
-    "sirv-cli": "^1.0.0",
-    "svelte-device-detector": "^0.2.2",
-    "svelte-router-spa": "^6.0.3",
-    "svelte-simple-modal": "^1.2.0"
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "firebase": "^13.0.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "svelte": "^5.46.4",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.0"
   }
 }

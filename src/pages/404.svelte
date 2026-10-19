@@ -1,15 +1,30 @@
-<script>
-import PerfectButton from "../components/PerfectButton.svelte";
-import { redirectHome } from "../utils";
+<div class="not-found">
+  <p class="code" aria-hidden="true">404</p>
+  <h1>this page doesn't exist</h1>
+  <p class="muted">maybe it was a typo. it happens to the best of us.</p>
+  <a class="button" href="/">back to the game</a>
+</div>
 
-// svelte-ignore unused-export-let
-export let currentRoute;
-// svelte-ignore unused-export-let
-export let params;
-</script>
+<style>
+  .not-found {
+    text-align: center;
+    margin-top: 48px;
+  }
 
-<main>
+  .code {
+    margin: 0;
+    font-size: clamp(5rem, 16vw, 9rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--rule-strong);
+    letter-spacing: -0.04em;
+  }
 
-    <h2>oops, looks like that page doesn't exist</h2>
-    <PerfectButton text="return home" onClickFn={redirectHome} />
-</main>
+  h1 {
+    margin-top: 0.2em;
+  }
+
+  p {
+    margin: 0 0 28px;
+  }
+</style>
