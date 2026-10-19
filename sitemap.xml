@@ -1,40 +1,6 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-    <url>
-        <loc>https://perfect-type.com</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-
-    <url>
-        <loc>https://perfect-type.com/login</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
-    <url>
-        <loc>https://perfect-type.com/signup</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
-    <url>
-        <loc>https://perfect-type.com/profile</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
-    <url>
-        <loc>https://perfect-type.com/leaderboard</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
-    <url>
-        <loc>https://perfect-type.com/logout</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
-    <url>
-        <loc>https://perfect-type.com/creators</loc>
-        <lastmod>2021-12-23</lastmod>
-    </url>
-    
+  <url><loc>https://perfect-type.com/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://perfect-type.com/leaderboard</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://perfect-type.com/privacy</loc><lastmod>2026-10-19</lastmod></url>
 </urlset>
