@@ -1,268 +1,278 @@
 <script>
-  import { promptIndex, wordsToDisplay } from '../stores.js';
-  import { generateRandomString, initializeTracker} from '../utils.js';
-  import GameOverDisplay from "../components/GameOverDisplay.svelte"
-  import GameModes from "../components/GameModes.svelte"
-  import { isLoggedIn, updateUserStats, getUserStats, getUser, getOnWinStats, updateToLeaderboard } from '../firebase.js';
-  import { onMount } from 'svelte'
-  import { fade } from "svelte/transition"
-  
-  let loggedIn = false;
-  isLoggedIn().then(res => loggedIn = res);
+  import GameModes from '../components/GameModes.svelte';
+  import TypingGame from '../components/TypingGame.svelte';
+  import GameOverDisplay from '../components/GameOverDisplay.svelte';
+  import AdUnit from '../components/AdUnit.svelte';
+  import { MAX_WPM, MODES, generatePrompt } from '../lib/game.js';
+  import { detectAutomation } from '../lib/anticheat.js';
+  import { saveRun } from '../lib/scores.js';
+  import { AD_SLOTS } from '../lib/config.js';
+  import { track } from '../firebase.js';
+  import { session } from '../stores.js';
+  import { formatWpm, isTouchOnly } from '../utils.js';
 
-  // svelte-ignore unused-export-let
-  export let currentRoute;
-  // svelte-ignore unused-export-let
-  export let params;
+  const MODE_KEY = 'perfect-type:mode';
+  const initialMode = savedMode();
 
-  // - GAME MODE VARIABLES - 
-  let mode = "easy";
-  const gameModeWordAmount = {'easy': 5, 'medium': 20, 'hard': 50, 'impossible': -1 };
-  wordsToDisplay.update(() => gameModeWordAmount[mode]);
-  function changeMode(e, id) {
-    let currentModeDiv = document.getElementsByClassName("active-mode")[0];
-    currentModeDiv.className = currentModeDiv.className.replace(' active-mode', '');
-    let newModeDiv = document.getElementById(id);
+  const MODE_INFO = {
+    easy: 'common words. a sprint where every millisecond counts.',
+    medium: 'words. long enough for nerves to kick in.',
+    hard: "words. one slip near the end and it's all gone.",
+    impossible: 'strings of random letters, numbers and symbols. good luck.',
+  };
 
-    newModeDiv.className += ' active-mode';
-    mode = e.target.innerHTML
-    wordsToDisplay.update(() => gameModeWordAmount[mode]);
-    for (let i = 0; i < promptIndexValue; i++) {
-      let letterToChange = document.getElementById(i);
-      letterToChange.classList.remove("typed-letter");
+  let mode = $state(initialMode);
+  let prompt = $state(generatePrompt(initialMode));
+  let round = $state(0);
+  let result = $state.raw(null);
+  let save = $state.raw(null);
+  let keyboardless = $state(isTouchOnly());
+
+  const best = $derived($session.profile?.stats[mode].best ?? 0);
+
+  function savedMode() {
+    try {
+      const stored = localStorage.getItem(MODE_KEY);
+      return Object.hasOwn(MODES, stored) ? stored : 'easy';
+    } catch {
+      return 'easy';
     }
-    tryAgain();
   }
 
-  // - DISPLAY VARIABLES -
-  let promptIndexValue;
-  let randomPrompt = generateRandomString();
-  let randomPromptWordSep = randomPrompt.split(" ");
-  let promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
-  // - GAME VARIABLES  - 
-  let gameOver = false;
-  let winGame = false;
-  let startTime = 0;
-  let prevXLocation = 0;
-  let prevLetter = 0;
-  let wpm = 0;
+  function restart() {
+    result = null;
+    save = null;
+    prompt = generatePrompt(mode);
+    round += 1;
+  }
 
-  // update display variables
-  for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
-  promptIndex.subscribe(value => {
-    promptIndexValue = value;
-  });
+  function selectMode(name) {
+    mode = name;
+    try {
+      localStorage.setItem(MODE_KEY, name);
+    } catch {
+      // the mode just won't be remembered
+    }
+    restart();
+  }
 
-  function gameListener() {
-    const handleClick = (event) => {
+  async function finish(run) {
+    const finishedRound = round;
+    const finishedMode = mode;
+    result = { ...run, flags: run.won ? detectAutomation(run.keystrokes, run.wpm) : [] };
+    track('game_end', { mode: finishedMode, won: run.won, wpm: run.wpm });
+
+    const outcome = await saveRun(finishedMode, result);
+    if (round === finishedRound) save = outcome;
+  }
+
+  function onkeydown(event) {
+    if (result && event.key === 'Enter' && !event.target.closest?.('button, a')) {
       event.preventDefault();
-      if (!gameOver) {
-        // initialize wpm calculation
-        if (startTime == 0) startTime = new Date();
-        // losing game
-        if (randomPrompt.charAt(promptIndexValue) !== event.key) {
-          gameOver = true; 
-          if (loggedIn) {
-            // write losing game
-            let docElement = mode+"GamesFailed";
-            getUserStats(getUser().uid, docElement).then( res => {
-              let updatedInfo = {};
-              updatedInfo[docElement] = res + 1;
-              updateUserStats(getUser().uid, updatedInfo);
-            })
-          }
-        } else {
-          // updates letter if typed correctly
-          updateLetterColor(event)
-          promptIndex.update(n => n + 1);
-        }
-        // winning game
-        if (promptIndexValue == randomPrompt.length) {
-          let endTime = new Date();
-          let totalMinutes = (endTime - startTime) / 60000; 
-          let lpm = Math.round(randomPrompt.length / totalMinutes * 1000) / 1000;
-          const avgLetterPerWord = 4.7;
-          wpm = Math.round((randomPrompt.length - (randomPromptWordSep.length - 1)) / avgLetterPerWord / totalMinutes * 1000) / 1000;
-          gameOver = true;
-          winGame = true;
-          if (loggedIn) {
-            // write winning game
-            let neededGameWin = mode + "GamesWon";
-            let neededLPM = mode + "LPM";
-            let neededWPM = mode + "WPM";
-            getOnWinStats(getUser().uid, neededGameWin, neededLPM, neededWPM).then( res => {
-              let updatedInfo = {};
-              updatedInfo[neededGameWin] = res[neededGameWin] + 1;
-              updatedInfo[neededLPM] = Math.round((res[neededLPM]*res[neededGameWin] + lpm) / updatedInfo[neededGameWin] * 1000) / 1000;
-              updatedInfo[neededWPM] = Math.round((res[neededWPM]*res[neededGameWin] + wpm) / updatedInfo[neededGameWin] * 1000) / 1000;
-              updateUserStats(getUser().uid, updatedInfo);
-            })
-            let leaderboardType = mode + "_wpm"
-            updateToLeaderboard(getUser(), leaderboardType, wpm);
-          }
-        }
-      } else {
-        if (event.key == "Enter") {
-          tryAgain(); 
-        }
-      }
-    };
-    document.addEventListener("keypress", handleClick);
-    return {
-      destroy() {
-        document.removeEventListener("keypress", handleClick);
-      }
-    };
-  }
-
-  function updateLetterColor(event) {
-    let letterToChange = document.getElementById(promptIndexValue);
-    letterToChange.classList.add("typed-letter");
-    let changeLine = letterToChange.offsetLeft < prevXLocation
-    if (changeLine) letterToChange.parentElement.scrollIntoView(true);
-    let nextLetter = document.getElementById(promptIndexValue+1)
-    if (nextLetter != null) {
-      let nextLetterChangeLine = nextLetter.offsetLeft < letterToChange.offsetLeft;
-      if (nextLetterChangeLine) tracker.style.backgroundColor = "rgb(0, 0, 0, 0)";
-      else tracker.style.backgroundColor = "var(--game-font-color)";
-      let letterOffsets = nextLetter.getBoundingClientRect();
-      tracker.style.left =  letterOffsets.left + "px";
-      if (nextLetter.innerHTML != "&nbsp;") tracker.style.width = 19.5 + "px";
-      else if (changeLine) tracker.style.width = (letterOffsets.width + 8) + "px";
+      restart();
+    } else if (!result && event.key === 'Escape') {
+      restart();
     }
-    prevLetter = letterToChange;
-    prevXLocation = letterToChange.offsetLeft;
   }
-
-  function tryAgain() {
-    startTime = 0;
-    prevXLocation = 0;
-    prevLetter = 0;
-    promptIndex.update(() => 0);
-    gameOver = false;
-    winGame = false;
-    randomPrompt = generateRandomString();
-    randomPromptWordSep = randomPrompt.split(" ");
-    promptWordLengths = [] // Used to update HTML divs with the correct id (index is stored as the id so we can get value by id)
-    for (let i=0; i < randomPromptWordSep.length; i++) promptWordLengths.push((i-1 < 0) ? randomPromptWordSep[i].length + 1 : randomPromptWordSep[i].length + promptWordLengths[i-1] + 1);
-    mode = mode;
-    initializeTracker();
-  }
-
-  
-  window.onresize = initializeTracker;
-  onMount(() => {
-    initializeTracker();
-  })
 </script>
 
-<style>
+<svelte:window {onkeydown} />
 
-  :global(.typed-letter) {
-    color: var(--main-accent-color);
-    /* border-bottom: solid var(--main-accent-color) 1px; */
-  }
-
-  .game-environment {
-    position: absolute;
-    margin: auto;
-    top: 0;
-    right: 100px;
-    bottom: 0;
-    left: 100px;
-    width: 80%;
-    height: 190px;
-    overflow: hidden;
-    font-size: 10mm;
-    overflow: hidden;
-    line-height: 50px;
-    transition: color 100ms;
-    scroll-behavior: smooth;
-  }
-
-  #occlusion {
-    margin: auto;
-    top: 0;
-    right: 100px;
-    bottom: 0;
-    left: 100px;
-    width: 80%;
-    height: 190px;
-    background: linear-gradient(transparent, var(--main-bg-color));
-    position: absolute;
-    
-  }
-
-  .game-word {
-    display:inline-block;
-    color: var(--game-font-color);
-  }
- 
-  .game-letter {
-    display:inline-block;
-    padding: 1px;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none;
-  }
-
-  /* this is to help with autoscrolling */
-  .invisible-letter {
-    color: rgb(0, 0, 0, 0);
-  }
-  
-  #tracker {
-    height: 50px;
-    position: absolute;
-    left: auto;
-    transition: background-color .05s ease-in;
-    transition: left 200ms;
-    background-color: var(--game-font-color);
-    animation: blinking .4s infinite;
-    -webkit-animation: blinking .4s infinite backwards alternate;
-  }
-  @-webkit-keyframes blinking {
-    0%   { opacity: .4; }
-    100% { opacity: .3; }
-  }
-
-  @keyframes blinking {
-    0%   { opacity: .4; }
-    100% { opacity: .3; }
-  }
-
-</style>
-
-
-<main in:fade use:gameListener>
-  {#if !gameOver} 
-  <GameModes mode={mode} changeMode={changeMode}/>
-  <!-- game components : start -->
-  <span id="tracker"></span>
-    <div class="game-environment noselect" id="game-env">
-      {#each randomPromptWordSep as word, i}
-        <div class="game-word" >
-          {#if i != 0}
-            <div class="game-letter" id={`${promptWordLengths[i-1] - 1}`}>&nbsp;</div>
-          {/if}
-          {#each word as letter, j}
-            <div class="game-letter" id={ (i-1) < 0 ? `${j}` : `${promptWordLengths[i-1] + j}`}>{letter}</div>
-          {/each}
-        </div>
-      {/each}
-      {#each [...Array(10).keys()] as num, i}
-        <div>
-          <div class="game-letter invisible-letter">if you see this sentence, you're awesome</div>
-        </div>
-      {/each}
+<section class="play" class:compact={keyboardless}>
+  {#if keyboardless}
+    <div class="keyboardless card">
+      <h1>perfect type needs a keyboard</h1>
+      <p>it's a typing game where one wrong key ends the run, so it's best on a laptop or desktop.</p>
+      <div class="actions">
+        <button class="button" onclick={() => (keyboardless = false)}>i have a keyboard</button>
+        <a class="button secondary" href="/leaderboard">see the leaderboard</a>
+      </div>
     </div>
-    <div id="occlusion"></div>
-    <!-- game components : end -->
+  {:else if result}
+    <GameOverDisplay {mode} {result} {save} onrestart={restart} />
   {:else}
-    <GameOverDisplay {winGame} {wpm} {tryAgain}/>
+    <div class="controls">
+      <GameModes {mode} onselect={selectMode} />
+      <p class="label">
+        {MODES[mode].words}
+        {MODES[mode].symbols ? 'symbol strings' : 'words'}{#if best}&nbsp;· your best {formatWpm(best)} wpm{/if}
+      </p>
+    </div>
+    {#key round}
+      <TypingGame {prompt} onfinish={finish} />
+    {/key}
+    <p class="hint muted">start typing to begin · one mistake ends the run · <kbd>esc</kbd> new words</p>
   {/if}
+</section>
 
-</main>
+<AdUnit slot={AD_SLOTS.play} />
+
+<article id="how-to-play">
+  <div class="intro">
+    <h2>how to play</h2>
+    <p>
+      perfect type is a typing test with one rule: type the text exactly. hit a single wrong key, whether it's a
+      typo, a missed space or a wrong capital, and the run is over. finish without a mistake and you win, with your
+      speed measured in words per minute.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li><span class="label">01</span>start typing whenever you're ready. the clock starts on your first key press.</li>
+    <li><span class="label">02</span>press <kbd>enter</kbd> after a game to play again, or <kbd>esc</kbd> mid-game for new words.</li>
+    <li><span class="label">03</span>log in to track your stats and put your best runs on the leaderboard.</li>
+  </ol>
+
+  <h2>modes</h2>
+  <div class="modes">
+    {#each Object.entries(MODES) as [name, { words }] (name)}
+      <div class="mode card">
+        <h3>{name}</h3>
+        <p><strong>{words}</strong> {MODE_INFO[name]}</p>
+      </div>
+    {/each}
+  </div>
+
+  <div class="columns">
+    <section>
+      <h2>how is wpm calculated?</h2>
+      <p>
+        perfect type uses the standard typing-test definition: every five characters, spaces included, count as one
+        word. your score is the length of the prompt divided by five, divided by the minutes between your first and
+        last key press. since a single mistake ends the game, every winning run is 100% accurate.
+      </p>
+    </section>
+    <section>
+      <h2>tips for typing perfectly</h2>
+      <ul>
+        <li>slow down a little. accuracy first, speed follows.</li>
+        <li>keep your eyes on the text, not on your hands.</li>
+        <li>read a word ahead so the next one never surprises you.</li>
+        <li>rest your fingers on the home row (asdf jkl;) and return to it after every key.</li>
+      </ul>
+    </section>
+  </div>
+
+  <h2>leaderboard rules</h2>
+  <p>
+    each player's best run in each mode goes on the <a href="/leaderboard">leaderboard</a>. you need an account with
+    a verified email address. runs that look automated, and anything over {MAX_WPM} wpm, aren't ranked.
+  </p>
+</article>
+
+<style>
+  .play {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 36px;
+    min-height: calc(100vh - 220px);
+    text-align: center;
+  }
+
+  .play.compact {
+    min-height: 0;
+    padding: 24px 0;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .controls p,
+  .hint {
+    margin: 0;
+  }
+
+  .hint {
+    font-size: 0.95rem;
+  }
+
+  .keyboardless {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .keyboardless h1 {
+    font-size: 1.6rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  article {
+    max-width: 880px;
+    margin: 48px auto 0;
+    padding-top: 48px;
+    border-top: 1px solid var(--rule);
+    line-height: 1.65;
+  }
+
+  .intro p {
+    font-size: 1.15rem;
+    margin-top: 0;
+  }
+
+  .steps {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px 28px;
+    margin: 28px 0 44px;
+    padding: 0;
+  }
+
+  .steps .label {
+    display: block;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+
+  .mode {
+    padding: 18px 20px;
+    box-shadow: none;
+  }
+
+  .mode h3 {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .mode p {
+    margin: 0;
+    font-size: 0.98rem;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px 48px;
+    margin-bottom: 28px;
+  }
+
+  .columns ul {
+    padding-left: 1.1em;
+    margin: 0;
+  }
+
+  .columns li + li {
+    margin-top: 6px;
+  }
+</style>

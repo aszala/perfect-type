@@ -103,8 +103,14 @@ dist
 # TernJS port file
 .tern-port
 
-# Default Svelte App
+# Build output
+/dist/
 /public/build/
+
+# Firebase emulators
+.firebase/
+firebase-debug.log
+firestore-debug.log
 
 # Mac Stuff
 .DS_Store

@@ -1,36 +1,28 @@
-<!-- must go inside of a card collection -->
 <script>
-  import { fade } from "svelte/transition";
-
-  export let title;
+  // aside: a small label shown opposite the title
+  let { title, aside, children } = $props();
 </script>
 
+<section class="card">
+  {#if title}
+    <header>
+      <h2>{title}</h2>
+      {#if aside}<span class="label">{aside}</span>{/if}
+    </header>
+  {/if}
+  {@render children?.()}
+</section>
+
 <style>
-
-  .card {
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    border-radius: 5px;
-    min-width: 350px;
-    max-width: 250px;
-    min-height: 200px;
-    padding: 10px;
-    margin: auto;
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
   }
 
-  .card:hover {
-    box-shadow: 0 3px 6px 0 rgba(0,0,0,0.2);
+  h2 {
+    margin: 0;
   }
-
-  .container {
-    padding: 2px 16px;
-  }
-
 </style>
-
-<div in:fade class="card">
-  <h2>{title}</h2>
-  <div class="container">
-    <p><slot>default card</slot></p>
-  </div>
-</div>

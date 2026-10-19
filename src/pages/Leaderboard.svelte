@@ -1,78 +1,57 @@
 <script>
-  import Card from "../components/Card.svelte";
-  import LeaderboardBlock from "../components/LeaderboardBlock.svelte";
-  import { getLeaderboard, getUserProfile } from "../firebase";
-  import { onMount } from "svelte"
-    // svelte-ignore unused-export-let
-  export let currentRoute;
-  // svelte-ignore unused-export-let
-  export let params;
+  import { onMount } from 'svelte';
+  import LeaderboardBlock from '../components/LeaderboardBlock.svelte';
+  import AdUnit from '../components/AdUnit.svelte';
+  import { MODE_NAMES } from '../lib/game.js';
+  import { fetchLeaderboard } from '../lib/db.js';
+  import { AD_SLOTS } from '../lib/config.js';
+  import { session } from '../stores.js';
 
-  let easyLeaderboardWPM = [];
-  let mediumLeaderboardWPM = [];
-  let hardLeaderboardWPM = [];
-  let impossibleLeaderboardWPM = [];
+  let boards = $state(Object.fromEntries(MODE_NAMES.map((mode) => [mode, null])));
+  let failed = $state(false);
 
   onMount(() => {
-    getLeaderboard("easy_wpm").then( res => {
-      easyLeaderboardWPM = res;
-    })
-    getLeaderboard("medium_wpm").then( res => {
-      mediumLeaderboardWPM = res;
-    })
-    getLeaderboard("hard_wpm").then( res => {
-      hardLeaderboardWPM = res;
-    })
-    getLeaderboard("impossible_wpm").then( res => {
-      impossibleLeaderboardWPM = res;
-    })
-  })
-  
+    for (const mode of MODE_NAMES) {
+      fetchLeaderboard(mode)
+        .then((rows) => {
+          boards[mode] = rows;
+        })
+        .catch((e) => {
+          console.error(e);
+          failed = true;
+        });
+    }
+  });
 </script>
 
+<header class="page-header">
+  <h1>leaderboard</h1>
+  <p>the top 10 perfect runs in each mode. verified accounts only, bots need not apply.</p>
+</header>
+
+{#if failed}
+  <p class="error">couldn't load the leaderboard, please refresh to try again.</p>
+{/if}
+
+<div class="boards">
+  {#each MODE_NAMES as mode (mode)}
+    <LeaderboardBlock {mode} rows={boards[mode]} me={$session.user?.uid} />
+  {/each}
+</div>
+
+<AdUnit slot={AD_SLOTS.leaderboard} />
+
 <style>
-  .card-collection {
-    max-height: auto;
-    justify-content: center;
-    max-width: 1500px;
-    display: flex;
-    flex-wrap: wrap;
+  .boards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 20px;
+    align-items: start;
+    max-width: 960px;
     margin: 0 auto;
   }
+
+  .error {
+    text-align: center;
+  }
 </style>
-
-<main>
-  <h1>leaderboard</h1>
-  {#if !(easyLeaderboardWPM.length == 0 || mediumLeaderboardWPM.length == 0 || hardLeaderboardWPM.length == 0 || impossibleLeaderboardWPM.length == 0)}
-    <div class="card-collection">
-
-      <Card title="easy (wpm)">
-        {#each easyLeaderboardWPM.slice(0, 5) as userObject, i}
-          <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
-        {/each}
-      </Card>
-
-
-      <Card title="medium (wpm)">
-        {#each mediumLeaderboardWPM.slice(0, 5) as userObject, i}
-          <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
-        {/each}
-      </Card>
-
-
-      <Card title="hard (wpm)">
-        {#each hardLeaderboardWPM.slice(0, 5) as userObject, i}
-          <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
-        {/each}
-      </Card>
-
-      
-      <Card title="impossible (wpm)">
-        {#each impossibleLeaderboardWPM.slice(0, 5) as userObject, i}
-          <LeaderboardBlock profilePhoto={userObject.profilePhoto} user={userObject.user} score={userObject.score} date={userObject.date} place={i+1}/>
-        {/each}
-      </Card>
-      
-    </div>
-  {/if}
-</main>

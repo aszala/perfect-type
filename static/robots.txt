@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /logout
+
+Sitemap: https://perfect-type.com/sitemap.xml

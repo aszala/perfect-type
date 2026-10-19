@@ -1,15 +1,15 @@
 <script>
-    import { logoutUser } from "../firebase";
-    import { fade } from "svelte/transition"
+  import { onMount } from 'svelte';
+  import { logOut } from '../lib/account.js';
 
-    logoutUser();
-
-    // svelte-ignore unused-export-let
-    export let currentRoute;
-    // svelte-ignore unused-export-let
-export let params;
+  onMount(logOut);
 </script>
 
-<main>
-    <h1 in:fade>logging you out</h1>
-</main>
+<p class="muted">logging you out…</p>
+
+<style>
+  p {
+    text-align: center;
+    margin-top: 80px;
+  }
+</style>
